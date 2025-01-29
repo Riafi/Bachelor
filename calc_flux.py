@@ -11,28 +11,28 @@ import pandas as pd
 #beam_values reads in the data from the 100GHz sourceband
 beam_values = pd.read_csv('data_bandboth_100GHz_new_no7.csv')
 flux = beam_values[' flux_value'].to_numpy()
-flux= 10**6*flux
+flux= 10**3*flux
 print (flux)
 flux_err = beam_values[' flux_error'].to_numpy()
-flux_err = 10**6*flux_err
+flux_err = 10**3*flux_err
 print (type(flux))
 #beam_345 reads in the data from the 345GHz sourceband
 beam_345 = pd.read_csv('data_bandboth_345GHz_new.csv')
 print (beam_345)
 flux345 = beam_345[' flux_value'].to_numpy()
-flux345=10**6*flux345
+flux345=10**3*flux345
 print (flux345)
 flux345_err = beam_345[' flux_error'].to_numpy()
-flux345_err = flux345_err*10**6
+flux345_err = flux345_err*10**3
 print (type(flux345))
 
 # calculate the dust and free free emission contributions using formulas from paper(!!!)
-S_100 = np.linspace (20,2000, 1000)
+S_100 = np.linspace (0.01,20, 1000)
 S_345_25 = 4* S_100*((345/100)**(-0.1))
 S_345_50 = 2* S_100*((345/100)**(-0.1))
 S_345_100 =  S_100*((345/100)**(-0.1))
 
-S_345 = np.linspace (20,2000, 1000)
+S_345 = np.linspace (0.01,20, 1000)
 S_100_25 = 4* S_345 *((100/345)**3.5)
 S_100_50 = 2* S_345 *((100/345)**3.5)
 S_100_100 =  S_345 *((100/345)**3.5)
@@ -73,9 +73,11 @@ print(peak_345, '\pm', peak_e_345)
 #calculate the peak brightness temperature using formula  from website (https://science.nrao.edu/facilities/vla/proposing/TBconv) 
 T_b = 1.222*10**3*(peak_345/(345**2*maj_345*min_345))
 print('brightness Temperature of peak intensity at 345GHz is',T_b)
+T_B = ((8.69*10**(-4))**2)*S_dust/(2*np.pi*1.381*((np.deg2rad(maj_345/3600)*np.deg2rad(min_345/3600))/4*np.log(2)))
+print ('brightness Temperature,' , T_B)
 
 #calculate gas temperature
-T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))
+T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))*10
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
