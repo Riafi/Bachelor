@@ -9,7 +9,7 @@ import pandas as pd
 
 # read in the values from the data and convert the flux values as well as the flux error values from Jy to mJy
 #beam_values reads in the data from the 100GHz sourceband
-beam_values = pd.read_csv('data_band_both_100GHz_dooff.csv')
+beam_values = pd.read_csv('data_bandboth_100GHz_new_no7.csv')
 flux = beam_values[' flux_value'].to_numpy()
 flux= 10**6*flux
 print (flux)
@@ -17,7 +17,7 @@ flux_err = beam_values[' flux_error'].to_numpy()
 flux_err = 10**6*flux_err
 print (type(flux))
 #beam_345 reads in the data from the 345GHz sourceband
-beam_345 = pd.read_csv('data_band_both_345GHz_dooff.csv')
+beam_345 = pd.read_csv('data_bandboth_345GHz_new.csv')
 print (beam_345)
 flux345 = beam_345[' flux_value'].to_numpy()
 flux345=10**6*flux345
@@ -70,10 +70,18 @@ peak_e_345 = beam_345[' peak_error'].to_numpy()
 peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 print(peak_345, '\pm', peak_e_345)
 
-#calculate the peak brightness temperature using formula  from website (!!!) 
+#calculate the peak brightness temperature using formula  from website (https://science.nrao.edu/facilities/vla/proposing/TBconv) 
 T_b = 1.222*10**3*(peak_345/(345**2*maj_345*min_345))
 print('brightness Temperature of peak intensity at 345GHz is',T_b)
 
 #calculate gas temperature
 T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))
 print('gas Temperature at 345GHz is', T_gas)
+
+#calculate dust mass using equation 6 from paper
+M_dust= 74.220*S_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9)
+print ('dust Mass is', np.log10(M_dust))
+
+#calculating gas mass using equation 7 from paper
+M_gas = 120*M_dust
+print('gas Mass is', np.log10(M_gas))
