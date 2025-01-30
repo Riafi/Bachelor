@@ -15,7 +15,7 @@ dis = 44*10**6 # Distance to ngc3256
 
 
 
-beam = pd.read_csv('data_band_both_100GHz_dooff.csv')
+beam = pd.read_csv('data_bandboth_100GHz_new_no7.csv')
 item_maj = []
 item_min = []
 item_r = []
@@ -35,7 +35,7 @@ for i in range(0,len(bmaj)):
     item_min.append(bmin)
     item_r.append(r_hl)
 
-beam_345 = pd.read_csv('data_band_both_100GHz_dooff.csv')
+beam_345 = pd.read_csv('data_bandboth_345GHz_new.csv')
 item_maj_345 = []
 item_min_345 = []
 item_r_345 = []

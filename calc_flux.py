@@ -42,11 +42,11 @@ S_100_100 =  S_345 *((100/345)**3.5)
 plt.errorbar(flux, flux345, xerr= flux_err, yerr=flux345_err, color='midnightblue', marker='+',capsize=2,  linestyle='none')
 #plotting the emission contributions for 25%,50% and 100%
 plt.plot(S_100,S_345_25, color ='dimgray')
-plt.plot(S_100,S_345_50, color='darkgrey')
-plt.plot(S_100,S_345_100, color = 'lightgray')
-plt.plot(S_345,S_100_25, color = 'dimgray')
-plt.plot(S_345,S_100_50, color='darkgrey')
-plt.plot(S_345,S_100_100, color = 'lightgray')
+#plt.plot(S_100,S_345_50, color='darkgrey')
+#plt.plot(S_100,S_345_100, color = 'lightgray')
+#plt.plot(S_345,S_100_25, color = 'dimgray')
+#plt.plot(S_345,S_100_50, color='darkgrey')
+#plt.plot(S_345,S_100_100, color = 'lightgray')
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('$S_{100}$ [$\mu$Jy]')
@@ -77,7 +77,7 @@ T_B = ((8.69*10**(-4))**2)*S_dust/(2*np.pi*1.381*((np.deg2rad(maj_345/3600)*np.d
 print ('brightness Temperature,' , T_B)
 
 #calculate gas temperature
-T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))*10
+T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
