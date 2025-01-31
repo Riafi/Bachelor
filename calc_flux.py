@@ -70,6 +70,7 @@ plt.xlabel('$S_{100}$ [$\mu$Jy]')
 plt.ylabel('$S_{345}$ [$\mu$Jy]')
 ax.set_xlim(left = 0.006 , right =2.5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 5 ,auto =True)
+plt.savefig('S_free_dust_contributions.pdf')
 plt.show()
 
 #calculating the dust contribution at 345 GHz for the YMCs
