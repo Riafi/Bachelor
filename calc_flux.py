@@ -43,14 +43,21 @@ fig, ax = plt.subplots()
 ax.margins(0)
 
 #plotting the flux values from both bands against each other
-plt.errorbar(flux, flux345, xerr= flux_err, yerr=flux345_err, color='midnightblue', marker='+',capsize=2,  linestyle='none')
+plt.errorbar(flux, flux345, xerr= flux_err, yerr=flux345_err, color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
 #plotting the emission contributions for 25%,50% and 100%
 plt.plot(S_100,S_345_25, color ='lightgray',zorder=2.5)
+plt.text(0.18, 0.1, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+
 plt.plot(S_100,S_345_50, color='darkgrey',zorder=2.5)
+plt.text(0.3, 0.1, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(S_100,S_345_100, color = 'dimgray',zorder=2.5)
+plt.text(0.41, 0.55, '$100 \% $ free-free contribution @ 345GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(S_100_25,S_345,  color = 'lightgray',zorder=2.5)
+plt.text(0.025, 0.33, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(S_100_50, S_345, color='darkgrey',zorder=2.5)
+plt.text(0.025, 0.49, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(S_100_100,S_345, color = 'dimgray',zorder=2.5)
+plt.text(0, 1, '$100 \% $ dust contribution @ 100GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 44, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 ax.fill_between(S_100, S_345_25, S_345_50, color = 'lightgray' , alpha =0.2,zorder = 1.5 )
 ax.fill_between(S_100, S_345_50, S_345_100, color = 'dimgray' , alpha =0.2, zorder = 1.5)
 ax.fill_between(S_100, S_345_100, 0, color = 'darkgray' , alpha =0.6, zorder = 1.5)
@@ -72,7 +79,7 @@ print (S_dust)
 print ('Dust contribution', S_dust/flux345)
 
 #calculate free free contribution at 100GHz
-S_dust100 = flux345*(100/345)**(4)
+S_dust100 = flux345*(100/345)**(3.5)
 S_ff100 = flux - S_dust100
 print('flux density at 100GHz' ,flux)
 print ('dust contribution at 100GHz in flux density', S_dust100)
