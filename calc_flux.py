@@ -12,19 +12,15 @@ import pandas as pd
 beam_values = pd.read_csv('data_bandboth_100GHz_new_no7.csv')
 flux = beam_values[' flux_value'].to_numpy()
 flux= 10**3*flux
-print (flux)
+
 flux_err = beam_values[' flux_error'].to_numpy()
 flux_err = 10**3*flux_err
-print (type(flux))
 #beam_345 reads in the data from the 345GHz sourceband
 beam_345 = pd.read_csv('data_bandboth_345GHz_new.csv')
-print (beam_345)
 flux345 = beam_345[' flux_value'].to_numpy()
 flux345=10**3*flux345
-print (flux345)
 flux345_err = beam_345[' flux_error'].to_numpy()
 flux345_err = flux345_err*10**3
-print (type(flux345))
 
 # calculate the dust and free free emission contributions using formulas from paper(!!!)
 S_100 = np.linspace (0.006,2.5, 1000)
@@ -66,8 +62,8 @@ ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zord
 ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$S_{100}$ [$\mu$Jy]')
-plt.ylabel('$S_{345}$ [$\mu$Jy]')
+plt.xlabel('$S_{100}$ [$m$Jy]')
+plt.ylabel('$S_{345}$ [$m$Jy]')
 ax.set_xlim(left = 0.006 , right =2.5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 5 ,auto =True)
 plt.savefig('S_free_dust_contributions.pdf')
@@ -75,14 +71,14 @@ plt.show()
 
 #calculating the dust contribution at 345 GHz for the YMCs
 S_ff = flux*((345/100)**(-0.1))
+eS_ff = flux_err* ( (345/100)**(-0.1))
 S_dust = flux345 -S_ff
-print (S_dust)
-print ('Dust contribution', S_dust/flux345)
+eS_dust = np.sqrt(flux345_err**2 + eS_ff**2)
+print (' percentage of Dust contribution at 345GHz', (S_dust/flux345)*100)
 
 #calculate free free contribution at 100GHz
 S_dust100 = flux345*(100/345)**(3.5)
 S_ff100 = flux - S_dust100
-print('flux density at 100GHz' ,flux)
 print ('dust contribution at 100GHz in flux density', S_dust100)
 print ('freefree contribution',S_ff100)
 print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
@@ -101,11 +97,11 @@ peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 #calculate the peak brightness temperature using formula  from website (https://science.nrao.edu/facilities/vla/proposing/TBconv) 
 T_b = 1.222*10**3*(peak_345/(345**2*maj_345*min_345))
 print('brightness Temperature of peak intensity at 345GHz is',T_b)
-T_B = ((8.69*10**(-4))**2)*S_dust/(2*np.pi*1.381*((np.deg2rad(maj_345/3600)*np.deg2rad(min_345/3600))/4*np.log(2)))
-print ('brightness Temperature,' , T_B)
+#T_B = ((8.69*10**(-4))**2)*S_dust/(2*np.pi*1.381*((np.deg2rad(maj_345/3600)*np.deg2rad(min_345/3600))/4*np.log(2)))
+#print ('brightness Temperature,' , T_B)
 
 #calculate gas temperature
-T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))*10
+T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
@@ -117,21 +113,21 @@ M_gas = 120*M_dust
 print('gas Mass is', np.log10(M_gas))
 
 #calculate luminosity of the free free emission using S_ff and distance of the ngc3256 at 44 Mpc
-L_vt = 4 * np.pi * (44**2) * S_ff100
+L_vt = 4 * np.pi * ((44*10**6)**2) * S_ff100
 print ('luminosity ', L_vt) 
 
 #calculate ionizing photon rates using equation 3 from paper sun et al.
 Q_0s = 1.6*10**52 * S_ff100 * ((44/10)**2) *((6000/6000)**(-0.51))
 print ('Q_0s is', Q_0s)
-M_stars = Q_0s / (2.2*10**46)
-print (type(M_stars))
+M_stars = Q_0s / (4.0*10**46)
+
 print ('stellar mass calculated is', np.log10(M_stars))
 #calculate ionizing photon rates using equation 9 from paper He et al.
-Q_0h = 6.3 * (10**25) * ((1000/1000)**(-0.51))*(100*0.1)*(L_vt)
-M_starh = Q_0h/(4.10**46) 
+Q_0h = 6.3 * (10**25) * ((1000/1000)**(-0.45))*(100**0.1)*(L_vt)
+M_starh = Q_0h/(4.0*10**46) 
 print ('ionizing photon number and Stellar mass', Q_0h, np.log(M_starh))
  
-dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$M_{stellar}$' : np.log10(M_starh) }
+dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$M_{stellar}$' : np.log10(M_stars) }
 df = pd.DataFrame(dict)
    
 print(df) 
