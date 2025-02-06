@@ -135,16 +135,19 @@ T_sd = flux345*10**(-3)*0.63*12**2/3514
 print ('TemperaturSingledish', T_sd)
 #calculate gas temperature
 T_gas = 11.07/(np.log(1+ 11.07/(T+0.195)))
+T_gas_10 = 11.07/(np.log(1+ 11.07/(T+0.195)))*10
 T_gas_err = 122.545*T_err/((T+0.195)*(T+11.265)*np.log(11.07/(T+0.195)+1)**2)
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
 M_dust= 74.220*S_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9)
+M_dust_10= 74.220*S_dust*(44**2)*((np.exp(17/T_gas_10)-1)/0.9)
 M_dust_err =np.sqrt((74.220*eS_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9))**2 + (74.220/0.9*S_dust*(44**2)*(np.exp(17/T_gas))*17/(T_gas**2)*T_gas_err)**2)
 print ('dust Mass is', np.log10(M_dust))
 
 #calculating gas mass using equation 7 from paper
 M_gas = 120*M_dust
+M_gas_10 =120*M_dust_10
 M_gas_err = 120*M_dust_err
 print('gas Mass is', np.log10(M_gas))
 
@@ -168,6 +171,13 @@ print ('ionizing photon number and Stellar mass', Q_0h, np.log(M_starh))
 #total mass
 M_tot = M_gas + M_stars
 M_tot_err = np.sqrt(M_gas_err**2 + Mstars_err**2)
+print(np.log10(M_tot))
+gas_fraction = (M_gas/M_tot)*100
+
+
+temp_mass = {'$T_b$':T,'$T_{gas}$':T_gas, '$T_{gas,corrected}$':T_gas_10, '$M_{gas}$' :np.log10(M_gas), '$M_{gas,corrected}$':np.log10(M_gas_10)}
+df_temp = pd.DataFrame(temp_mass)
+print(df_temp.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
 
 
 #calculate radii
@@ -177,7 +187,7 @@ bmin_rad = np.deg2rad(bmin/3600) * dis
 bmin_rad_err = np.deg2rad(bmin_err/3600) * dis
 r_hl = np.sqrt(bmaj_rad*bmin_rad)
 r_hl_err = np.sqrt((bmin_rad_err**2*bmaj_rad**2 + bmaj_rad_err**2 * bmin_rad**2)/(bmin_rad*bmaj_rad))
-m=np.linspace(10**6,10**9,1000)
+m=np.linspace(10**4,10**7,1000)
 r_beam  = 0*m+ 19.198621772
 fig,ax = plt.subplots()
 ax.margins(0)
@@ -187,12 +197,13 @@ plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
 plt.ylabel('$R_{hl}$ [pc]')
-ax.set_xlim(left = 10**6 , right =10**9, auto = True)
-ax.set_ylim(bottom = 10**(0) , top = 10**2 ,auto =True)
+ax.set_xlim(left = 7*10**5 , right =7*10**6, auto = True)
+ax.set_ylim(bottom = 2*10**(0) , top = 4*10**1 ,auto =True)
 plt.savefig('totalmasstohalflightradius.pdf')
 plt.show()
  
-dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)), '$M_{stellar}$' : np.log10(M_stars),'$R_{{hl}}$ ': r_hl, '$\Delta R_{{hl}}$ ': r_hl_err }
+dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)),'$f_{gas}$' : gas_fraction, '$M_{stellar}$' : np.log10(M_stars)}
 df = pd.DataFrame(dict)
    
 print(df) 
+print(df.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
