@@ -9,17 +9,17 @@ import pandas as pd
 
 # read in the values from the data and convert the flux values as well as the flux error values from Jy to mJy
 #beam_values reads in the data from the 100GHz sourceband
-beam_values = pd.read_csv('data_bandboth_100GHz_new_no7.csv')
-flux = beam_values[' flux_value'].to_numpy()
+beam_values = pd.read_csv('data_bandboth_100GHz_flux_decon.csv')
+flux = beam_values['flux_value'].to_numpy()
 flux= 10**3*flux
 
-flux_err = beam_values[' flux_error'].to_numpy()
+flux_err = beam_values['flux_error'].to_numpy()
 flux_err = 10**3*flux_err
 #beam_345 reads in the data from the 345GHz sourceband
-beam_345 = pd.read_csv('data_bandboth_345GHz_new.csv')
-flux345 = beam_345[' flux_value'].to_numpy()
+beam_345 = pd.read_csv('data_bandboth_345GHz_flux_decon.csv')
+flux345 = beam_345['flux_value'].to_numpy()
 flux345=10**3*flux345
-flux345_err = beam_345[' flux_error'].to_numpy()
+flux345_err = beam_345['flux_error'].to_numpy()
 flux345_err = flux345_err*10**3
 
 # calculate the dust and free free emission contributions using formulas from paper(!!!)
@@ -71,26 +71,29 @@ plt.show()
 
 #calculating the dust contribution at 345 GHz for the YMCs
 S_ff = flux*((345/100)**(-0.1))
-eS_ff = flux_err* ( (345/100)**(-0.1))
+eS_ff = flux_err* ( (345/100)**(-0.1)) #error of flux density at 100GHz
 S_dust = flux345 -S_ff
-eS_dust = np.sqrt(flux345_err**2 + eS_ff**2)
+eS_dust = np.sqrt(flux345_err**2 + eS_ff**2) # error of flux density at 345GHz using gauss' error estimation
 print (' percentage of Dust contribution at 345GHz', (S_dust/flux345)*100)
 
 #calculate free free contribution at 100GHz
 S_dust100 = flux345*(100/345)**(3.5)
+err_S_dust100 = flux345_err*(100/345)**(3.5)
 S_ff100 = flux - S_dust100
+err_S_ff100 = np.sqrt(flux_err**2 + err_S_dust100**2)
 print ('dust contribution at 100GHz in flux density', S_dust100)
 print ('freefree contribution',S_ff100)
 print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
 
-
+radi = pd.read_csv('data_bandboth_100GHz_deconvolved.csv')
+radi3 = pd.read_csv('data_bandboth_345GHz_deconvolved.csv')
 #read in the major and minor axis
-maj_345 = beam_345[' bmaj_value'].to_numpy()
-min_345 = beam_345[' bmin_value'].to_numpy()
+maj_345 = radi3[' bmaj'].to_numpy()
+min_345 = radi3['bmin'].to_numpy()
 #read in the peak intensity of the regions and their error
-peak_345 = beam_345[' peak_value'].to_numpy()
+peak_345 = beam_345['peak_value'].to_numpy()
 peak_345 = 10**3*peak_345 # converting Jy/beam into mJy/beam
-peak_e_345 = beam_345[' peak_error'].to_numpy()
+peak_e_345 = beam_345['peak_error'].to_numpy()
 peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 #print(peak_345, '\pm', peak_e_345)
 
@@ -99,9 +102,11 @@ T_b = 1.222*10**3*(peak_345/(345**2*maj_345*min_345))
 print('brightness Temperature of peak intensity at 345GHz is',T_b)
 #T_B = ((8.69*10**(-4))**2)*S_dust/(2*np.pi*1.381*((np.deg2rad(maj_345/3600)*np.deg2rad(min_345/3600))/4*np.log(2)))
 #print ('brightness Temperature,' , T_B)
+T= (flux345*10**(-3))*(13.6*(300/345)**2*(1/min_345)*(1/maj_345))
+print('Temperatur',T)
 
 #calculate gas temperature
-T_gas = 11.07/(np.log(1+ 11.07/(T_b+0.195)))
+T_gas = 11.07/(np.log(1+ 11.07/(T+0.195)))
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
@@ -113,7 +118,7 @@ M_gas = 120*M_dust
 print('gas Mass is', np.log10(M_gas))
 
 #calculate luminosity of the free free emission using S_ff and distance of the ngc3256 at 44 Mpc
-L_vt = 4 * np.pi * ((44*10**6)**2) * S_ff100
+L_vt = 4 * np.pi * ((44*10**6)**2) * S_ff100*10**3
 print ('luminosity ', L_vt) 
 
 #calculate ionizing photon rates using equation 3 from paper sun et al.
