@@ -187,7 +187,7 @@ bmin_rad = np.deg2rad(bmin/3600) * dis
 bmin_rad_err = np.deg2rad(bmin_err/3600) * dis
 r_hl = np.sqrt(bmaj_rad*bmin_rad)
 r_hl_err = np.sqrt((bmin_rad_err**2*bmaj_rad**2 + bmaj_rad_err**2 * bmin_rad**2)/(bmin_rad*bmaj_rad))
-m=np.linspace(10**4,10**7,1000)
+m=np.linspace(10**4,10**9,1000)
 r_beam  = 0*m+ 19.198621772
 fig,ax = plt.subplots()
 ax.margins(0)
@@ -197,7 +197,7 @@ plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
 plt.ylabel('$R_{hl}$ [pc]')
-ax.set_xlim(left = 7*10**5 , right =7*10**6, auto = True)
+ax.set_xlim(left = 7*10**6 , right =4*10**8, auto = True)
 ax.set_ylim(bottom = 2*10**(0) , top = 4*10**1 ,auto =True)
 plt.savefig('totalmasstohalflightradius.pdf')
 plt.show()
