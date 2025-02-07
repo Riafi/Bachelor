@@ -73,10 +73,10 @@ plt.savefig('S_free_dust_contributions.pdf')
 plt.show()
 
 #calculating the dust contribution at 345 GHz for the YMCs
-S_ff = flux*((345/100)**(-0.1))
-eS_ff = flux_err* ( (345/100)**(-0.1)) #error of flux density at 100GHz
-S_dust = flux345 -S_ff
-eS_dust = np.sqrt(flux345_err**2 + eS_ff**2) # error of flux density at 345GHz using gauss' error estimation
+S_ff = (flux*10**(-3))*((345/100)**(-0.1))
+eS_ff = (flux_err*10**(-3))* ( (345/100)**(-0.1)) #error of flux density at 100GHz
+S_dust = flux345*10**(-3) -S_ff
+eS_dust = np.sqrt((flux345_err*10**(-3))**2 + (eS_ff*10**(-3))**2) # error of flux density at 345GHz using gauss' error estimation
 print (' percentage of Dust contribution at 345GHz', (S_dust/flux345)*100)
 
 #calculate free free contribution at 100GHz
@@ -121,9 +121,9 @@ peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 #print(peak_345, '\pm', peak_e_345)
 
 #calculate the peak brightness temperature using formula  from website (https://science.nrao.edu/facilities/vla/proposing/TBconv) 
-T_b = 1.222*10**3*(peak_345/(345**2*bmaj*bmin))
-T_b_err = np.sqrt((1222*peak_e_345/(345**2*bmaj*bmin))**2+((1222*peak_345*bmin_err)/(345**2*bmaj*bmin**2))**2 + ((1222*peak_345*bmaj_err)/(345**2*bmin*bmaj**2))**2)
-print('brightness Temperature of peak intensity at 345GHz is',T_b)
+#T_b = 1.222*10**3*(peak_345/(345**2*bmaj*bmin))
+#T_b_err = np.sqrt((1222*peak_e_345/(345**2*bmaj*bmin))**2+((1222*peak_345*bmin_err)/(345**2*bmaj*bmin**2))**2 + ((1222*peak_345*bmaj_err)/(345**2*bmin*bmaj**2))**2)
+#print('brightness Temperature of peak intensity at 345GHz is',T_b)
 #T_B = ((8.69*10**(-4))**2)*S_dust/(2*np.pi*1.381*((np.deg2rad(maj_345/3600)*np.deg2rad(min_345/3600))/4*np.log(2)))
 #print ('brightness Temperature,' , T_B)
 
@@ -131,8 +131,8 @@ print('brightness Temperature of peak intensity at 345GHz is',T_b)
 T= (flux345*10**(-3))*(13.6*(300/345)**2*(1/bmin)*(1/bmaj))
 T_err = np.sqrt((flux345_err*10**(-3)*(13.6*(300/345)**2*(1/bmin)*(1/bmaj)))**2 + (flux345*10**(-3)*13.6*(300/345)**2*(bmin_err/(bmin**2))*(1/bmaj))**2 +(flux345*10**(-3)*13.6*(300/345)**2*(bmaj_err/(bmaj**2))*(1/bmin))**2)
 print('Temperatur',T)
-T_sd = flux345*10**(-3)*0.63*12**2/3514
-print ('TemperaturSingledish', T_sd)
+#T_sd = flux345*10**(-3)*0.63*12**2/3514
+#print ('TemperaturSingledish', T_sd)
 #calculate gas temperature
 T_gas = 11.07/(np.log(1+ 11.07/(T+0.195)))
 T_gas_10 = 11.07/(np.log(1+ 11.07/(T+0.195)))*10
@@ -140,9 +140,9 @@ T_gas_err = 122.545*T_err/((T+0.195)*(T+11.265)*np.log(11.07/(T+0.195)+1)**2)
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
-M_dust= 74.220*S_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9)
-M_dust_10= 74.220*S_dust*(44**2)*((np.exp(17/T_gas_10)-1)/0.9)
-M_dust_err =np.sqrt((74.220*eS_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9))**2 + (74.220/0.9*S_dust*(44**2)*(np.exp(17/T_gas))*17/(T_gas**2)*T_gas_err)**2)
+M_dust= 74220*S_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9)
+M_dust_10= 74220*S_dust*(44**2)*((np.exp(17/T_gas_10)-1)/0.9)
+M_dust_err =np.sqrt((74220*eS_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9))**2 + (74220/0.9*S_dust*(44**2)*(np.exp(17/T_gas))*17/(T_gas**2)*T_gas_err)**2)
 print ('dust Mass is', np.log10(M_dust))
 
 #calculating gas mass using equation 7 from paper
