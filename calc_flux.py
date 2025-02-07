@@ -188,10 +188,10 @@ bmin_rad_err = np.deg2rad(bmin_err/3600) * dis
 r_hl = np.sqrt(bmaj_rad*bmin_rad)
 r_hl_err = np.sqrt((bmin_rad_err**2*bmaj_rad**2 + bmaj_rad_err**2 * bmin_rad**2)/(bmin_rad*bmaj_rad))
 m=np.linspace(10**4,10**9,1000)
-r_beam  = 0*m+ 19.198621772
+r_beam  = 0*m+ 9.470899419552286
 fig,ax = plt.subplots()
 ax.margins(0)
-plt.errorbar(M_tot,r_hl, yerr = r_hl_err/(np.log(10)), xerr= np.abs(M_tot_err/(np.log(10))),  color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
+plt.errorbar(M_tot,r_hl, yerr = r_hl_err/(r_hl*np.log(10)), xerr= np.abs(M_tot_err/(M_tot*np.log(10))),  color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
 plt.plot(m,r_beam, color='lightgray',linestyle='--', zorder=2.5)
 plt.xscale('log')
 plt.yscale('log')

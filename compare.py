@@ -53,3 +53,8 @@ beam = np.sqrt(np.deg2rad(0.0452447/3600)* np.deg2rad(0.0435672/3600))
 print (beam)
 hwhm = beam * dis
 print (hwhm)
+
+###########################################################
+########### data sets for comparison ######################
+hwhm = 0*r_hl +hwhm                  #HWHM for NGC3256 at R_hl
+
