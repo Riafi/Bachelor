@@ -74,16 +74,16 @@ plt.show()
 
 #calculating the dust contribution at 345 GHz for the YMCs
 S_ff = (flux*10**(-3))*((345/100)**(-0.1))
-eS_ff = (flux_err*10**(-3))* ( (345/100)**(-0.1)) #error of flux density at 100GHz
+eS_ff = (flux_err*10**(-3))* ( (345/100)**(-0.1)) #error of free free flux density at 345GHz
 S_dust = flux345*10**(-3) -S_ff
 eS_dust = np.sqrt((flux345_err*10**(-3))**2 + (eS_ff*10**(-3))**2) # error of flux density at 345GHz using gauss' error estimation
 print (' percentage of Dust contribution at 345GHz', (S_dust/flux345)*100)
 
 #calculate free free contribution at 100GHz
 S_dust100 = flux345*(100/345)**(3.5)
-err_S_dust100 = flux345_err*(100/345)**(3.5)
+err_S_dust100 = flux345_err*(100/345)**(3.5)  #error of dust emission flux density at 100GHz
 S_ff100 = flux - S_dust100
-err_S_ff100 = np.sqrt(flux_err**2 + err_S_dust100**2)
+err_S_ff100 = np.sqrt(flux_err**2 + err_S_dust100**2)      #error of free free emission flux density at 100GHz
 print ('dust contribution at 100GHz in flux density', S_dust100)
 print ('freefree contribution',S_ff100)
 print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
@@ -136,19 +136,19 @@ print('Temperatur',T)
 #calculate gas temperature
 T_gas = 11.07/(np.log(1+ 11.07/(T+0.195)))
 T_gas_10 = 11.07/(np.log(1+ 11.07/(T+0.195)))*10
-T_gas_err = 122.545*T_err/((T+0.195)*(T+11.265)*np.log(11.07/(T+0.195)+1)**2)
+T_gas_err = 122.545*T_err/((T+0.195)*(T+11.265)*np.log(11.07/(T+0.195)+1)**2)   #error of gas Temperature
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
 M_dust= 74220*S_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9)
 M_dust_10= 74220*S_dust*(44**2)*((np.exp(17/T_gas_10)-1)/0.9)
-M_dust_err =np.sqrt((74220*eS_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9))**2 + (74220/0.9*S_dust*(44**2)*(np.exp(17/T_gas))*17/(T_gas**2)*T_gas_err)**2)
+M_dust_err =np.sqrt((74220*eS_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9))**2 + (74220/0.9*S_dust*(44**2)*(np.exp(17/T_gas))*17/(T_gas**2)*T_gas_err)**2)   #error of dust mass
 print ('dust Mass is', np.log10(M_dust))
 
 #calculating gas mass using equation 7 from paper
 M_gas = 120*M_dust
 M_gas_10 =120*M_dust_10
-M_gas_err = 120*M_dust_err
+M_gas_err = 120*M_dust_err      #error of dust mass
 print('gas Mass is', np.log10(M_gas))
 
 #calculate luminosity of the free free emission using S_ff and distance of the ngc3256 at 44 Mpc
@@ -207,3 +207,5 @@ df = pd.DataFrame(dict)
    
 print(df) 
 print(df.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
+
+print(np.log10(130115.362684011))
