@@ -120,6 +120,10 @@ peak_e_345 = beam_345['peak_error'].to_numpy()
 peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 #print(peak_345, '\pm', peak_e_345)
 
+bmaj_sr= bmaj/3600.*np.pi/180
+bmin_sr=bmin/3600.*np.pi/180
+beam_sr = np.pi*(bmaj_sr/2.0*bmin_sr/2.0)*np.log(2)
+jytok = light**2 /beam_sr/1e23/(2*k_b*(345*10**9)**2)
 #calculate the peak brightness temperature using formula  from website (https://science.nrao.edu/facilities/vla/proposing/TBconv) 
 #T_b = 1.222*10**3*(peak_345/(345**2*bmaj*bmin))
 #T_b_err = np.sqrt((1222*peak_e_345/(345**2*bmaj*bmin))**2+((1222*peak_345*bmin_err)/(345**2*bmaj*bmin**2))**2 + ((1222*peak_345*bmaj_err)/(345**2*bmin*bmaj**2))**2)
@@ -131,12 +135,13 @@ peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 T= (flux345*10**(-3))*(13.6*(300/345)**2*(1/bmin)*(1/bmaj))
 T_err = np.sqrt((flux345_err*10**(-3)*(13.6*(300/345)**2*(1/bmin)*(1/bmaj)))**2 + (flux345*10**(-3)*13.6*(300/345)**2*(bmin_err/(bmin**2))*(1/bmaj))**2 +(flux345*10**(-3)*13.6*(300/345)**2*(bmaj_err/(bmaj**2))*(1/bmin))**2)
 print('Temperatur',T)
-#T_sd = flux345*10**(-3)*0.63*12**2/3514
-#print ('TemperaturSingledish', T_sd)
+
+T_phangs =(flux345*10**(-3)/beam_sr)*jytok
+print (T_phangs)
 #calculate gas temperature
-T_gas = 11.07/(np.log(1+ 11.07/(T+0.195)))
-T_gas_10 = 11.07/(np.log(1+ 11.07/(T+0.195)))*10
-T_gas_err = 122.545*T_err/((T+0.195)*(T+11.265)*np.log(11.07/(T+0.195)+1)**2)   #error of gas Temperature
+T_gas = 11.07/(np.log(1+ 11.07/(45+0.195)))
+T_gas_10 = 11.07/(np.log(1+ 11.07/(45+0.195)))*10
+T_gas_err = 122.545*0.45/((45+0.195)*(45+11.265)*np.log(11.07/(45+0.195)+1)**2)   #error of gas Temperature
 print('gas Temperature at 345GHz is', T_gas)
 
 #calculate dust mass using equation 6 from paper
@@ -152,7 +157,8 @@ M_gas_err = 120*M_dust_err      #error of dust mass
 print('gas Mass is', np.log10(M_gas))
 
 #calculate luminosity of the free free emission using S_ff and distance of the ngc3256 at 44 Mpc
-L_vt = 4 * np.pi * ((44*10**6)**2) * S_ff100*10**3
+L_vt = 4 * np.pi * ((44*10**6*3.1*10**18)**2) * S_ff100*10**(-3)*10**(-23)
+L_vt_err = 4*np.pi*(44*10**6*3.1*10**18)**2 * err_S_ff100*10**(-3)*10**(-23)
 print ('luminosity ', L_vt) 
 
 #calculate ionizing photon rates using equation 3 from paper sun et al.
@@ -162,15 +168,17 @@ print ('Q_0s is', Q_0s)
 M_stars = Q_0s / (4.0*10**46)
 Mstars_err = Q_0s_err/(4.0*10**46)
 
-print ('stellar mass calculated is', np.log10(M_stars))
+print ('stellar mass calculated is', (M_stars))
 #calculate ionizing photon rates using equation 9 from paper He et al.
 Q_0h = 6.3 * (10**25) * ((1000/1000)**(-0.45))*(100**0.1)*(L_vt)
+Q_0h_err = 6.3*(10**25) * ((1000/1000)**(-0.45))*(100*0.1)*(L_vt_err)
 M_starh = Q_0h/(4.0*10**46) 
-print ('ionizing photon number and Stellar mass', Q_0h, np.log(M_starh))
+M_starh_err=Q_0h_err/(4.0*10**46)
+print ('ionizing photon number and Stellar mass', Q_0h, (M_starh))
 
 #total mass
-M_tot = M_gas + M_stars
-M_tot_err = np.sqrt(M_gas_err**2 + Mstars_err**2)
+M_tot = M_gas + M_starh
+M_tot_err = np.sqrt(M_gas_err**2 + M_starh_err**2)
 print(np.log10(M_tot))
 gas_fraction = (M_gas/M_tot)*100
 
@@ -181,12 +189,14 @@ print(df_temp.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
 
 
 #calculate radii
-bmaj_rad = np.deg2rad(bmaj/3600) * dis
-bmaj_rad_err = np.deg2rad(bmaj_err/3600) * dis
-bmin_rad = np.deg2rad(bmin/3600) * dis
-bmin_rad_err = np.deg2rad(bmin_err/3600) * dis
+bmaj_rad = (np.deg2rad(bmaj/3600))/2 * dis
+bmaj_rad_err = (np.deg2rad(bmaj_err/3600))/2 * dis
+bmin_rad = (np.deg2rad(bmin/3600))/2 * dis
+bmin_rad_err = (np.deg2rad(bmin_err/3600))/2 * dis
 r_hl = np.sqrt(bmaj_rad*bmin_rad)
 r_hl_err = np.sqrt((bmin_rad_err**2*bmaj_rad**2 + bmaj_rad_err**2 * bmin_rad**2)/(bmin_rad*bmaj_rad))
+
+print('beam radii is :', r_hl, r_hl_err)
 m=np.linspace(10**4,10**9,1000)
 r_beam  = 0*m+ 9.470899419552286
 fig,ax = plt.subplots()
@@ -197,8 +207,8 @@ plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
 plt.ylabel('$R_{hl}$ [pc]')
-ax.set_xlim(left = 3*10**6 , right =4*10**8, auto = True)
-ax.set_ylim(bottom = 2*10**(0) , top = 4*10**1 ,auto =True)
+ax.set_xlim(left = 5*10**5 , right =2*10**7, auto = True)
+ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
 plt.savefig('totalmasstohalflightradius.pdf')
 plt.show()
  
