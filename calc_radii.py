@@ -43,8 +43,8 @@ df = pd.DataFrame(dict)
 print(df) 
 print(df.to_latex(float_format="{:.3f}".format))
 
-beam = pd.read_csv('data_bandboth_100GHz_deconvolved.csv')
-beam3 = pd.read_csv('data_bandboth_345GHz_deconvolved.csv')
+beam = pd.read_csv('data_band3_3rms.csv')
+beam3 = pd.read_csv('data_band7_3rms.csv')
 bmaj = beam[' bmaj'].to_numpy()
 bmaj_err = beam[' bmaj_error'].to_numpy()
 bmin = beam['bmin'].to_numpy()
@@ -57,15 +57,15 @@ bmin_err3 = beam3['bmin_error'].to_numpy()
 
     #calculte major and minor axis in pc
 
-bmaj = np.deg2rad(bmaj/3600) * dis
-bmaj_err = np.deg2rad(bmaj_err/3600) * dis
-bmin = np.deg2rad(bmin/3600) * dis
-bmin_err = np.deg2rad(bmin_err/3600) * dis
+bmaj = np.deg2rad(bmaj/3600)/2 * dis
+bmaj_err = np.deg2rad(bmaj_err/3600)/2 * dis
+bmin = np.deg2rad(bmin/3600)/2 * dis
+bmin_err = np.deg2rad(bmin_err/3600)/2 * dis
 
-bmaj3 = np.deg2rad(bmaj3/3600) * dis
-bmaj_err3 = np.deg2rad(bmaj_err3/3600) * dis
-bmin3 = np.deg2rad(bmin3/3600) * dis
-bmin_err3 = np.deg2rad(bmin_err3/3600) * dis
+bmaj3 = np.deg2rad(bmaj3/3600)/2 * dis
+bmaj_err3 = np.deg2rad(bmaj_err3/3600)/2 * dis
+bmin3 = np.deg2rad(bmin3/3600)/2 * dis
+bmin_err3 = np.deg2rad(bmin_err3/3600)/2 * dis
 
     # calculate geometric mean of bmaj and bmin
 r_hl = np.sqrt(bmaj*bmin)

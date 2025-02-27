@@ -12,18 +12,34 @@ dis=44*10**6
 
 # read in the values from the data and convert the flux values as well as the flux error values from Jy to mJy
 #beam_values reads in the data from the 100GHz sourceband
-beam_values = pd.read_csv('data_bandboth_100GHz_flux_decon.csv')
+beam_values = pd.read_csv('data_band3_3rms_flux.csv')
 flux = beam_values['flux_value'].to_numpy()
 flux= 10**3*flux
 
 flux_err = beam_values['flux_error'].to_numpy()
 flux_err = 10**3*flux_err
 #beam_345 reads in the data from the 345GHz sourceband
-beam_345 = pd.read_csv('data_bandboth_345GHz_flux_decon.csv')
+beam_345 = pd.read_csv('data_band7_3rms_flux.csv')
 flux345 = beam_345['flux_value'].to_numpy()
 flux345=10**3*flux345
 flux345_err = beam_345['flux_error'].to_numpy()
 flux345_err = flux345_err*10**3
+
+#calculating the dust contribution at 345 GHz for the YMCs
+S_ff = (flux*10**(-3))*((345/100)**(-0.1))
+eS_ff = (flux_err*10**(-3))* ( (345/100)**(-0.1)) #error of free free flux density at 345GHz
+S_dust = flux345*10**(-3) -S_ff
+eS_dust = np.sqrt((flux345_err*10**(-3))**2 + (eS_ff*10**(-3))**2) # error of flux density at 345GHz using gauss' error estimation
+print (' percentage of Dust contribution at 345GHz', (S_dust/flux345)*100)
+
+#calculate free free contribution at 100GHz
+S_dust100 = flux345*(100/345)**(3.5)
+err_S_dust100 = flux345_err*(100/345)**(3.5)  #error of dust emission flux density at 100GHz
+S_ff100 = flux - S_dust100
+err_S_ff100 = np.sqrt(flux_err**2 + err_S_dust100**2)      #error of free free emission flux density at 100GHz
+print ('dust contribution at 100GHz in flux density', S_dust100)
+print ('freefree contribution',S_ff100)
+print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
 
 # calculate the dust and free free emission contributions using formulas from paper(!!!)
 S_100 = np.linspace (0.006,2.5, 1000)
@@ -69,8 +85,63 @@ plt.xlabel('$S_{100}$ [$m$Jy]')
 plt.ylabel('$S_{345}$ [$m$Jy]')
 ax.set_xlim(left = 0.006 , right =2.5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 5 ,auto =True)
-plt.savefig('S_free_dust_contributions.pdf')
+plt.savefig('S_free_dust_contributions_3rms.pdf')
 plt.show()
+
+############flux against flux grouped by YMC visibility at diffrent freqencies#########
+f_band3_100 =np.take(flux,[0,1,2,3,6,7,8])
+f_band3_345 =np.take(flux345,[0,1,2,3,6,7,8])
+f_band3_100_err =np.take(flux_err,[0,1,2,3,6,7,8])
+f_band3_345_err =np.take(flux345_err,[0,1,2,3,6,7,8])
+f_band37_100 = np.take(flux,[4,5,12])
+f_band37_345 = np.take(flux345,[4,5,12])
+f_band37_100_err = np.take(flux_err,[4,5,12])
+f_band37_345_err = np.take(flux345_err,[4,5,12])
+f_band7_100 =np.take(flux,[9,10,11])
+f_band7_345 =np.take(flux345,[9,10,11])
+f_band7_100_err =np.take(flux_err,[9,10,11])
+f_band7_345_err =np.take(flux345_err,[9,10,11])
+
+print('flux values visible at 3rms at 100',f_band3_100)
+fig, ax = plt.subplots()
+ax.margins(0)
+
+#plotting the flux values from both bands against each other
+plt.errorbar(f_band3_100, f_band3_345, xerr= f_band3_100_err, yerr=f_band3_345_err, color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5, label ='100GHz')
+plt.errorbar(f_band37_100, f_band37_345, xerr= f_band37_100_err, yerr=f_band37_345_err, color='darkgoldenrod', marker='+',capsize=2,  linestyle='none', zorder = 3.5, label ='100GHz & 345GHz')
+plt.errorbar(f_band7_100, f_band7_345, xerr= f_band7_100_err, yerr=f_band7_345_err, color='firebrick', marker='+',capsize=2,  linestyle='none', zorder = 3.5 , label = '345GHz')
+#plotting the emission contributions for 25%,50% and 100%
+plt.plot(S_100,S_345_25, color ='lightgray',zorder=2.5)
+plt.text(0.18, 0.1, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+
+plt.plot(S_100,S_345_50, color='darkgrey',zorder=2.5)
+plt.text(0.3, 0.1, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100,S_345_100, color = 'dimgray',zorder=2.5)
+plt.text(0.41, 0.55, '$100 \% $ free-free contribution @ 345GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 44, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_25,S_345,  color = 'lightgray',zorder=2.5)
+plt.text(0.025, 0.33, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_50, S_345, color='darkgrey',zorder=2.5)
+plt.text(0.025, 0.49, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_100,S_345, color = 'dimgray',zorder=2.5)
+plt.text(0, 1, '$100 \% $ dust contribution @ 100GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 44, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+ax.fill_between(S_100, S_345_25, S_345_50, color = 'lightgray' , alpha =0.2,zorder = 1.5 )
+ax.fill_between(S_100, S_345_50, S_345_100, color = 'dimgray' , alpha =0.2, zorder = 1.5)
+ax.fill_between(S_100, S_345_100, 0, color = 'darkgray' , alpha =0.6, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_25, S_100_50, color ='lightgray', alpha = 0.2, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('$S_{100}$ [$m$Jy]')
+plt.ylabel('$S_{345}$ [$m$Jy]')
+ax.set_xlim(left = 0.006 , right =2.5, auto = True)
+ax.set_ylim(bottom = 0.05 , top = 5 ,auto =True)
+ax.legend()
+plt.savefig('S_free_dust_contributions_3rms_bands.pdf')
+plt.show()
+
+
+
 
 #calculating the dust contribution at 345 GHz for the YMCs
 S_ff = (flux*10**(-3))*((345/100)**(-0.1))
@@ -88,30 +159,30 @@ print ('dust contribution at 100GHz in flux density', S_dust100)
 print ('freefree contribution',S_ff100)
 print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
 
-radi = pd.read_csv('data_bandboth_100GHz_deconvolved.csv')
-radi3 = pd.read_csv('data_bandboth_345GHz_deconvolved.csv')
+radi = pd.read_csv('data_band3_3rms.csv')
+radi3 = pd.read_csv('data_band7_3rms.csv')
 #read in the major and minor axis
 a = radi[' bmaj'].to_numpy()
-a =a[0:10]
+a =a[0:7]
 b = radi3[' bmaj'].to_numpy()
-b=b[10:23]
+b=b[7:13]
 bmaj = np.append(a,b)
 print (bmaj)
 c = radi['bmin'].to_numpy()
-c=c[0:10]
+c=c[0:7]
 d = radi3['bmin'].to_numpy()
-d=d[10:23]
+d=d[7:13]
 bmin = np.append(c,d)
 ae = radi[' bmaj_error'].to_numpy()
-ae =ae[0:10]
+ae =ae[0:7]
 be = radi3[' bmaj_error'].to_numpy()
-be=be[10:23]
+be=be[7:13]
 bmaj_err = np.append(ae,be)
 print (bmaj)
 ce = radi['bmin_error'].to_numpy()
-ce=ce[0:10]
+ce=ce[0:7]
 de = radi3['bmin_error'].to_numpy()
-de=de[10:23]
+de=de[7:13]
 bmin_err = np.append(ce,de)
 #read in the peak intensity of the regions and their error
 peak_345 = beam_345['peak_value'].to_numpy()
@@ -120,24 +191,7 @@ peak_e_345 = beam_345['peak_error'].to_numpy()
 peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 #print(peak_345, '\pm', peak_e_345)
 
-bmaj_sr= bmaj/3600.*np.pi/180
-bmin_sr=bmin/3600.*np.pi/180
-beam_sr = np.pi*(bmaj_sr/2.0*bmin_sr/2.0)*np.log(2)
-jytok = light**2 /beam_sr/1e23/(2*k_b*(345*10**9)**2)
-#calculate the peak brightness temperature using formula  from website (https://science.nrao.edu/facilities/vla/proposing/TBconv) 
-#T_b = 1.222*10**3*(peak_345/(345**2*bmaj*bmin))
-#T_b_err = np.sqrt((1222*peak_e_345/(345**2*bmaj*bmin))**2+((1222*peak_345*bmin_err)/(345**2*bmaj*bmin**2))**2 + ((1222*peak_345*bmaj_err)/(345**2*bmin*bmaj**2))**2)
-#print('brightness Temperature of peak intensity at 345GHz is',T_b)
-#T_B = ((8.69*10**(-4))**2)*S_dust/(2*np.pi*1.381*((np.deg2rad(maj_345/3600)*np.deg2rad(min_345/3600))/4*np.log(2)))
-#print ('brightness Temperature,' , T_B)
 
-
-T= (flux345*10**(-3))*(13.6*(300/345)**2*(1/bmin)*(1/bmaj))
-T_err = np.sqrt((flux345_err*10**(-3)*(13.6*(300/345)**2*(1/bmin)*(1/bmaj)))**2 + (flux345*10**(-3)*13.6*(300/345)**2*(bmin_err/(bmin**2))*(1/bmaj))**2 +(flux345*10**(-3)*13.6*(300/345)**2*(bmaj_err/(bmaj**2))*(1/bmin))**2)
-print('Temperatur',T)
-
-T_phangs =(flux345*10**(-3)/beam_sr)*jytok
-print (T_phangs)
 #calculate gas temperature
 T_gas = 11.07/(np.log(1+ 11.07/(45+0.195)))
 T_gas_10 = 11.07/(np.log(1+ 11.07/(45+0.195)))*10
@@ -176,16 +230,28 @@ M_starh = Q_0h/(4.0*10**46)
 M_starh_err=Q_0h_err/(4.0*10**46)
 print ('ionizing photon number and Stellar mass', Q_0h, (M_starh))
 
+print('max and min stellar mass',(min(M_starh)), max(M_starh))
+mass=np.linspace(min(M_starh), max(M_starh), 1000)
+mas =mass
+fig,ax=plt.subplots()
+plt.errorbar(M_starh,M_stars,xerr=M_starh_err, yerr=Mstars_err, color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
+plt.plot(mass,mas, color='lightgray',linestyle='--', zorder=2.5)
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('$M_{stellar}$ [$M_{\odot}$] using He et al. equation')
+plt.ylabel('$M_{stellar}$ [$M_{\odot}$] using Sun et al. equation')
+
+plt.savefig('stellar mass comparison.pdf')
+plt.show()
+
+
+
 #total mass
 M_tot = M_gas + M_starh
 M_tot_err = np.sqrt(M_gas_err**2 + M_starh_err**2)
 print(np.log10(M_tot))
 gas_fraction = (M_gas/M_tot)*100
 
-
-temp_mass = {'$T_b$':T,'$T_{gas}$':T_gas, '$T_{gas,corrected}$':T_gas_10, '$M_{gas}$' :np.log10(M_gas), '$M_{gas,corrected}$':np.log10(M_gas_10)}
-df_temp = pd.DataFrame(temp_mass)
-print(df_temp.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
 
 
 #calculate radii
@@ -214,7 +280,7 @@ plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
 plt.ylabel('$R_{hl}$ [pc]')
 ax.set_xlim(left = 5*10**5 , right =2*10**7, auto = True)
 ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
-plt.savefig('totalmasstohalflightradius.pdf')
+plt.savefig('totalmasstohalflightradius_3rms.pdf')
 plt.show()
  
 dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)),'$f_{gas}$' : gas_fraction, '$M_{stellar}$' : np.log10(M_stars)}
@@ -223,4 +289,3 @@ df = pd.DataFrame(dict)
 print(df) 
 print(df.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
 
-print(np.log10(130115.362684011))
