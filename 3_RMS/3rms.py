@@ -283,7 +283,7 @@ ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
 plt.savefig('totalmasstohalflightradius_3rms.pdf')
 plt.show()
  
-dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)),'$f_{gas}$' : gas_fraction, '$M_{stellar}$' : np.log10(M_stars)}
+dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)),'$R_{hl}$' : r_hl, '$M_{tot}$' : np.log10(M_tot)}
 df = pd.DataFrame(dict)
    
 print(df) 
