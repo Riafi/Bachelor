@@ -261,12 +261,13 @@ bmin_rad = (np.deg2rad(bmin/3600))/2 * dis
 bmin_rad_err = (np.deg2rad(bmin_err/3600))/2 * dis
 r_hl = np.sqrt(bmaj_rad*bmin_rad)
 r_hl_err = np.sqrt((bmin_rad_err**2*bmaj_rad**2 + bmaj_rad_err**2 * bmin_rad**2)/(bmin_rad*bmaj_rad))
-r_hl_plot = r_hl[np.where(r_hl_err/(r_hl*np.log(10))<100)]
-r_hl_err_plot = r_hl_err[np.where(r_hl_err/(r_hl*np.log(10))<100)]
-M_tot_plot = M_tot[np.where(r_hl_err/(r_hl*np.log(10))<100)]
-M_tot_err_plot=M_tot_err[np.where(r_hl_err/(r_hl*np.log(10))<100)]
+
+r_hl_plot = r_hl[np.where(r_hl > 0.001)]
+r_hl_err_plot = r_hl_err[np.where(r_hl > 0.001)]
+M_tot_plot = M_tot[np.where(r_hl > 0.001)]
+M_tot_err_plot=M_tot_err[np.where(r_hl > 0.001)]
 print ('error of the halflight radius' ,r_hl_err_plot/(r_hl_plot*np.log(10)))
-print('not used data in diagramm:',r_hl[np.where(r_hl_err/(r_hl*np.log(10))>100)])
+print('not used data in diagramm:',r_hl[np.where(r_hl < 0.001)])
 print('beam radii is :', r_hl, r_hl_err)
 m=np.linspace(10**4,10**9,1000)
 r_beam  = 0*m+ 9.470899419552286
@@ -282,6 +283,44 @@ ax.set_xlim(left = 5*10**5 , right =2*10**7, auto = True)
 ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
 plt.savefig('totalmasstohalflightradius_2rms.pdf')
 plt.show()
+
+################halflight radii to total mass sorted by visiblity in frequency bands#################
+r_band3 =np.take(r_hl,[1,2,5,6,7,8])
+M_band3=np.take(M_tot,[1,2,5,6,7,8])
+r_band3err =np.take(r_hl_err,[1,2,5,6,7,8])
+M_band3err =np.take(M_tot_err,[1,2,5,6,7,8])
+r_band37= np.take(r_hl,[0,3,4,9,10,11,12,13,14,15])
+M_band37= np.take(M_tot,[0,3,4,9,10,11,12,13,14,15])
+r_band37err = np.take(r_hl_err,[0,3,4,9,10,11,12,13,14,15])
+M_band37err = np.take(M_tot_err,[0,3,4,9,10,11,12,13,14,15])
+r_band7=r_hl[16:27]
+M_band7=M_tot[16:27]
+r_band7err =r_hl_err[16:27]
+M_band7err =M_tot_err[16:27]
+
+fig,ax = plt.subplots()
+ax.margins(0)
+plt.errorbar(M_band3,r_band3, yerr = r_band3err/(r_band3*np.log(10)), xerr= np.abs(M_band3err/(M_band3*np.log(10))),  color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz')
+plt.errorbar(M_band37[np.where(r_band37 > 0.001)],r_band37[np.where(r_band37 > 0.001)], yerr = r_band37err[np.where(r_band37 > 0.001)]/(r_band37[np.where(r_band37 > 0.001)]*np.log(10)), xerr= np.abs(M_band37err[np.where(r_band37 > 0.001)]/(M_band37[np.where(r_band37 > 0.001)]*np.log(10))),  color='darkgoldenrod', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz & 345GHz')
+plt.errorbar(M_band7[np.where(r_band7 > 0.001)],r_band7[np.where(r_band7 > 0.001)], yerr = r_band7err[np.where(r_band7 > 0.001)]/(r_band7[np.where(r_band7 > 0.001)]*np.log(10)), xerr= np.abs(M_band7err[np.where(r_band7 > 0.001)]/(M_band7[np.where(r_band7 > 0.001)]*np.log(10))),  color='firebrick', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='345GHz')
+plt.plot(m,r_beam, color='lightgray',linestyle='--', zorder=2.5)
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
+plt.ylabel('$R_{hl}$ [pc]')
+ax.set_xlim(left = 5*10**5 , right =2*10**7, auto = True)
+ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
+ax.legend()
+plt.savefig('totalmasstohalflightradius_2rms_bands.pdf')
+plt.show()
+
+
+
+
+
+
+
+
  
 dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)),'$R_{hl}$' : r_hl, '$M_{tot}$' : np.log10(M_tot)}
 df = pd.DataFrame(dict)
