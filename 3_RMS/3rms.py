@@ -108,8 +108,8 @@ ax.margins(0)
 
 #plotting the flux values from both bands against each other
 plt.errorbar(f_band3_100, f_band3_345, xerr= f_band3_100_err, yerr=f_band3_345_err, color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5, label ='100GHz')
-plt.errorbar(f_band37_100, f_band37_345, xerr= f_band37_100_err, yerr=f_band37_345_err, color='darkgoldenrod', marker='+',capsize=2,  linestyle='none', zorder = 3.5, label ='100GHz & 345GHz')
-plt.errorbar(f_band7_100, f_band7_345, xerr= f_band7_100_err, yerr=f_band7_345_err, color='firebrick', marker='+',capsize=2,  linestyle='none', zorder = 3.5 , label = '345GHz')
+plt.errorbar(f_band37_100, f_band37_345, xerr= f_band37_100_err, yerr=f_band37_345_err, color='blueviolet', marker='+',capsize=2,  linestyle='none', zorder = 3.5, label ='100GHz & 345GHz')
+plt.errorbar(f_band7_100, f_band7_345, xerr= f_band7_100_err, yerr=f_band7_345_err, color='cornflowerblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5 , label = '345GHz')
 #plotting the emission contributions for 25%,50% and 100%
 plt.plot(S_100,S_345_25, color ='lightgray',zorder=2.5)
 plt.text(0.18, 0.1, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
@@ -251,6 +251,7 @@ M_tot = M_gas + M_starh
 M_tot_err = np.sqrt(M_gas_err**2 + M_starh_err**2)
 print(np.log10(M_tot))
 gas_fraction = (M_gas/M_tot)*100
+gas_fraction_err = np.sqrt((M_gas_err/M_tot)**2 + ((M_gas*M_tot_err)/(M_tot**2))**2)*100
 
 
 
@@ -270,10 +271,16 @@ print('not used data in diagramm:',r_hl[np.where(r_hl_err/(r_hl*np.log(10))>100)
 print('beam radii is :', r_hl, r_hl_err)
 m=np.linspace(10**4,10**9,1000)
 r_beam  = 0*m+ 9.470899419552286
+r_beam_better = 0*m +4.73544971
+r_beam_half =0*m +0.5*4.73544971/2
+
 fig,ax = plt.subplots()
 ax.margins(0)
 plt.errorbar(M_tot_plot,r_hl_plot, yerr = r_hl_err_plot/(r_hl_plot*np.log(10)), xerr= np.abs(M_tot_err_plot/(M_tot_plot*np.log(10))),  color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
-plt.plot(m,r_beam, color='lightgray',linestyle='--', zorder=2.5)
+plt.plot(m,r_beam_better, color='lightgray',linestyle='--', zorder=2.5)
+plt.text(0.58, 0.6, 'Radius of the restoring beam',color = 'dimgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
+plt.text(0.525, 0.225, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
@@ -283,9 +290,64 @@ ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
 plt.savefig('totalmasstohalflightradius_3rms.pdf')
 plt.show()
  
+################halflight radii to total mass sorted by visiblity in frequency bands#################
+r_band3 =np.take(r_hl,[0,1,2,3,6,7,8])
+M_band3=np.take(M_tot,[0,1,2,3,6,7,8])
+r_band3err =np.take(r_hl_err,[0,1,2,3,6,7,8])
+M_band3err =np.take(M_tot_err,[0,1,2,3,6,7,8])
+r_band37= np.take(r_hl,[4,5,12])
+M_band37= np.take(M_tot,[4,5,12])
+r_band37err = np.take(r_hl_err,[4,5,12])
+M_band37err = np.take(M_tot_err,[4,5,12])
+r_band7=np.take(r_hl,[9,10,11])
+M_band7=np.take(M_tot,[9,10,11])
+r_band7err =np.take(r_hl_err,[9,10,11])
+M_band7err =np.take(M_tot_err,[9,10,11])
+
+fig,ax = plt.subplots()
+ax.margins(0)
+plt.errorbar(M_band3,r_band3, yerr = r_band3err/(r_band3*np.log(10)), xerr= np.abs(M_band3err/(M_band3*np.log(10))),  color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz')
+plt.errorbar(M_band37[np.where(r_band37 > 0.001)],r_band37[np.where(r_band37 > 0.001)], yerr = r_band37err[np.where(r_band37 > 0.001)]/(r_band37[np.where(r_band37 > 0.001)]*np.log(10)), xerr= np.abs(M_band37err[np.where(r_band37 > 0.001)]/(M_band37[np.where(r_band37 > 0.001)]*np.log(10))),  color='blueviolet', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz & 345GHz')
+plt.errorbar(M_band7[np.where(r_band7 > 0.001)],r_band7[np.where(r_band7 > 0.001)], yerr = r_band7err[np.where(r_band7 > 0.001)]/(r_band7[np.where(r_band7 > 0.001)]*np.log(10)), xerr= np.abs(M_band7err[np.where(r_band7 > 0.001)]/(M_band7[np.where(r_band7 > 0.001)]*np.log(10))),  color='cornflowerblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='345GHz')
+plt.plot(m,r_beam_better, color='dimgray',linestyle='--', zorder=2.5)
+plt.text(0.58, 0.6, 'Radius of the restoring beam',color = 'dimgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
+plt.text(0.525, 0.225, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
+plt.ylabel('$R_{hl}$ [pc]')
+ax.set_xlim(left = 5*10**5 , right =2*10**7, auto = True)
+ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
+ax.legend()
+plt.savefig('totalmasstohalflightradius_3rms_bands.pdf')
+plt.show()
+
+
+ra1 = beam_values[' m0_value'].to_numpy()
+d1 = beam_values['m1_value'].to_numpy()
+R1 = np.rad2deg(ra1[0:7])
+d1 = np.rad2deg(d1[0:7])
+ra2 = beam_345[' m0_value'].to_numpy()
+d2 = beam_345['m1_value'].to_numpy()
+R2 = np.rad2deg(ra2[7:13])
+d2= np.rad2deg(d2[7:13])
+RA = np.append(R1,R2)
+dec=np.append(d1,d2)
+print(RA,dec)
+
+
+ 
 dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)),'$R_{hl}$' : r_hl, '$M_{tot}$' : np.log10(M_tot)}
 df = pd.DataFrame(dict)
    
 print(df) 
 print(df.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
+## flux,flux_err,flux345, flux345_err, S_ff100,err_S_ff100 in mJy
+## s_dust,eS_dust in Jy
+id = np.linspace(1.0,13.0,13)
+print(id)
+all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
+for_csv = pd.DataFrame(all_info)
+for_csv.to_csv('3_RMS_all_info.csv', float_format="{:.3f}".format)
 
