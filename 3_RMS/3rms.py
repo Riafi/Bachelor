@@ -89,10 +89,10 @@ plt.savefig('S_free_dust_contributions_3rms.pdf')
 plt.show()
 
 ############flux against flux grouped by YMC visibility at diffrent freqencies#########
-f_band3_100 =np.take(flux,[0,1,2,3,6,7,8])
-f_band3_345 =np.take(flux345,[0,1,2,3,6,7,8])
-f_band3_100_err =np.take(flux_err,[0,1,2,3,6,7,8])
-f_band3_345_err =np.take(flux345_err,[0,1,2,3,6,7,8])
+f_band3_100 =np.take(flux,[0,1,2,3,6,7,8,13,14,15,16])
+f_band3_345 =np.take(flux345,[0,1,2,3,6,7,8,13,14,15,16])
+f_band3_100_err =np.take(flux_err,[0,1,2,3,6,7,8,13,14,15,16])
+f_band3_345_err =np.take(flux345_err,[0,1,2,3,6,7,8,13,14,15,16])
 f_band37_100 = np.take(flux,[4,5,12])
 f_band37_345 = np.take(flux345,[4,5,12])
 f_band37_100_err = np.take(flux_err,[4,5,12])
@@ -163,27 +163,29 @@ radi = pd.read_csv('data_band3_3rms.csv')
 radi3 = pd.read_csv('data_band7_3rms.csv')
 #read in the major and minor axis
 a = radi[' bmaj'].to_numpy()
-a =a[0:7]
+ar =np.take(a,[0,1,2,3,4,5,6,13,14,15,16])
 b = radi3[' bmaj'].to_numpy()
 b=b[7:13]
-bmaj = np.append(a,b)
-print (bmaj)
+bmaj = np.append(ar,b)
+#print (bmaj)
 c = radi['bmin'].to_numpy()
-c=c[0:7]
+cr = np.take(c,[0,1,2,3,4,5,6,13,14,15,16])
 d = radi3['bmin'].to_numpy()
 d=d[7:13]
-bmin = np.append(c,d)
+bmin = np.append(cr,d)
 ae = radi[' bmaj_error'].to_numpy()
-ae =ae[0:7]
+aer = np.take(ae,[0,1,2,3,4,5,6,13,14,15,16])
 be = radi3[' bmaj_error'].to_numpy()
 be=be[7:13]
-bmaj_err = np.append(ae,be)
-print (bmaj)
+bmaj_err = np.append(aer,be)
+#print (bmaj)
 ce = radi['bmin_error'].to_numpy()
-ce=ce[0:7]
+cer = np.take(ce,[0,1,2,3,4,5,6,13,14,15,16])
 de = radi3['bmin_error'].to_numpy()
 de=de[7:13]
-bmin_err = np.append(ce,de)
+bmin_err = np.append(cer,de)
+
+print(bmaj,bmin)
 #read in the peak intensity of the regions and their error
 peak_345 = beam_345['peak_value'].to_numpy()
 peak_345 = 10**3*peak_345 # converting Jy/beam into mJy/beam
@@ -291,10 +293,10 @@ plt.savefig('totalmasstohalflightradius_3rms.pdf')
 plt.show()
  
 ################halflight radii to total mass sorted by visiblity in frequency bands#################
-r_band3 =np.take(r_hl,[0,1,2,3,6,7,8])
-M_band3=np.take(M_tot,[0,1,2,3,6,7,8])
-r_band3err =np.take(r_hl_err,[0,1,2,3,6,7,8])
-M_band3err =np.take(M_tot_err,[0,1,2,3,6,7,8])
+r_band3 =np.take(r_hl,[0,1,2,3,6,7,8,13,14,15,16])
+M_band3=np.take(M_tot,[0,1,2,3,6,7,8,13,14,15,16])
+r_band3err =np.take(r_hl_err,[0,1,2,3,6,7,8,13,14,15,16])
+M_band3err =np.take(M_tot_err,[0,1,2,3,6,7,8,13,14,15,16])
 r_band37= np.take(r_hl,[4,5,12])
 M_band37= np.take(M_tot,[4,5,12])
 r_band37err = np.take(r_hl_err,[4,5,12])
@@ -325,9 +327,11 @@ plt.show()
 
 
 ra1 = beam_values[' m0_value'].to_numpy()
-d1 = beam_values['m1_value'].to_numpy()
-R1 = np.rad2deg(ra1[0:7])
-d1 = np.rad2deg(d1[0:7])
+D1 = beam_values['m1_value'].to_numpy()
+R1 = np.take(ra1,[0,1,2,3,4,5,6,13,14,15,16])
+R1 = np.rad2deg(R1)
+d1 = np.take(D1,[0,1,2,3,4,5,6,13,14,15,16])
+d1 = np.rad2deg(d1)
 ra2 = beam_345[' m0_value'].to_numpy()
 d2 = beam_345['m1_value'].to_numpy()
 R2 = np.rad2deg(ra2[7:13])
@@ -345,7 +349,7 @@ print(df)
 print(df.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
 ## flux,flux_err,flux345, flux345_err, S_ff100,err_S_ff100 in mJy
 ## s_dust,eS_dust in Jy
-id = np.linspace(1.0,13.0,13)
+id = np.linspace(1.0,17.0,17)
 print(id)
 all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
 for_csv = pd.DataFrame(all_info)
