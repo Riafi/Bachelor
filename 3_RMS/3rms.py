@@ -351,6 +351,14 @@ print(df.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
 ## s_dust,eS_dust in Jy
 id = np.linspace(1.0,17.0,17)
 print(id)
+table1 = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err,'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
+table1 = pd.DataFrame(table1)
+print(table1.to_latex(float_format="{:.3f}".format))
+
+table2 = {'Region_ID':id, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100,'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
+table2 = pd.DataFrame(table2)
+print(table2.to_latex(float_format="{:.3f}".format))
+
 all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
 for_csv = pd.DataFrame(all_info)
 for_csv.to_csv('3_RMS_all_info.csv', float_format="{:.3f}".format)
