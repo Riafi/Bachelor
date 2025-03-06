@@ -12,7 +12,7 @@ dis=44*10**6
 
 # read in the values from the data and convert the flux values as well as the flux error values from Jy to mJy
 #beam_values reads in the data from the 100GHz sourceband
-beam_values = pd.read_csv('data_band3_3rms_flux.csv')
+beam_values = pd.read_csv('data_band3_3rms_flux_double.csv')
 flux = beam_values['flux_value'].to_numpy()
 flux= 10**3*flux
 
@@ -85,7 +85,7 @@ plt.xlabel('$S_{100}$ [$m$Jy]')
 plt.ylabel('$S_{345}$ [$m$Jy]')
 ax.set_xlim(left = 0.006 , right =2.5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 5 ,auto =True)
-plt.savefig('S_free_dust_contributions_3rms.pdf')
+plt.savefig('S_free_dust_contributions_3rms_double.pdf')
 plt.show()
 
 ############flux against flux grouped by YMC visibility at diffrent freqencies#########
@@ -137,7 +137,7 @@ plt.ylabel('$S_{345}$ [$m$Jy]')
 ax.set_xlim(left = 0.006 , right =2.5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 5 ,auto =True)
 ax.legend()
-plt.savefig('S_free_dust_contributions_3rms_bands.pdf')
+plt.savefig('S_free_dust_contributions_3rms_bands_double.pdf')
 plt.show()
 
 
@@ -159,7 +159,7 @@ print ('dust contribution at 100GHz in flux density', S_dust100)
 print ('freefree contribution',S_ff100)
 print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
 
-radi = pd.read_csv('data_band3_3rms.csv')
+radi = pd.read_csv('data_band3_3rms _double.csv')
 radi3 = pd.read_csv('data_band7_3rms.csv')
 #read in the major and minor axis
 a = radi[' bmaj'].to_numpy()
@@ -243,7 +243,7 @@ plt.yscale('log')
 plt.xlabel('$M_{stellar}$ [$M_{\odot}$] using He et al. equation')
 plt.ylabel('$M_{stellar}$ [$M_{\odot}$] using Sun et al. equation')
 
-plt.savefig('stellar mass comparison.pdf')
+plt.savefig('stellar mass comparison_double.pdf')
 plt.show()
 
 
@@ -289,7 +289,7 @@ plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
 plt.ylabel('$R_{hl}$ [pc]')
 ax.set_xlim(left = 5*10**5 , right =2*10**7, auto = True)
 ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
-plt.savefig('totalmasstohalflightradius_3rms.pdf')
+plt.savefig('totalmasstohalflightradius_3rms_double.pdf')
 plt.show()
  
 ################halflight radii to total mass sorted by visiblity in frequency bands#################
@@ -322,7 +322,7 @@ plt.ylabel('$R_{hl}$ [pc]')
 ax.set_xlim(left = 5*10**5 , right =2*10**7, auto = True)
 ax.set_ylim(bottom = 5*10**(-1) , top = 2*10**1 ,auto =True)
 ax.legend()
-plt.savefig('totalmasstohalflightradius_3rms_bands.pdf')
+plt.savefig('totalmasstohalflightradius_3rms_bands_double.pdf')
 plt.show()
 
 
@@ -361,5 +361,5 @@ print(table2.to_latex(float_format="{:.3f}".format))
 
 all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
 for_csv = pd.DataFrame(all_info)
-for_csv.to_csv('3_RMS_all_info.csv', float_format="{:.3f}".format)
+for_csv.to_csv('3_RMS_all_info_double.csv', float_format="{:.3f}".format)
 
