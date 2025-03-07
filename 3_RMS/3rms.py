@@ -19,7 +19,7 @@ flux= 10**3*flux
 flux_err = beam_values['flux_error'].to_numpy()
 flux_err = 10**3*flux_err
 #beam_345 reads in the data from the 345GHz sourceband
-beam_345 = pd.read_csv('data_band7_3rms_flux.csv')
+beam_345 = pd.read_csv('data_band7_3rms_flux_double.csv')
 flux345 = beam_345['flux_value'].to_numpy()
 flux345=10**3*flux345
 flux345_err = beam_345['flux_error'].to_numpy()
@@ -160,7 +160,7 @@ print ('freefree contribution',S_ff100)
 print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
 
 radi = pd.read_csv('data_band3_3rms _double.csv')
-radi3 = pd.read_csv('data_band7_3rms.csv')
+radi3 = pd.read_csv('data_band7_3rms_double.csv')
 #read in the major and minor axis
 a = radi[' bmaj'].to_numpy()
 ar =np.take(a,[0,1,2,3,4,5,6,13,14,15,16])
