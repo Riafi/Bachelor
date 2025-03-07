@@ -340,6 +340,18 @@ RA = np.append(R1,R2)
 dec=np.append(d1,d2)
 print(RA,dec)
 
+####gas surface density#########
+surface = M_gas/(np.pi*(r_hl**2)*np.log(2))
+surface_err = np.sqrt((M_gas_err/(np.pi*(r_hl**2)*np.log(2)))**2 + ((M_gas*2*r_hl_err)/(np.pi*(r_hl**3)*np.log(2)))**2)
+print(' gas surface density is', surface)
+
+
+######optical extinction##########
+A_v = 0.0491*surface
+A_v_err = 0.0491*surface_err
+
+print('optical extinction of the sources are', A_v)
+
 
  
 dict = {'$S_{{100GHz}}$' : flux , '$S_{100GHz,ff}$' : S_ff100, '$S_{{345GHz}}$' : flux345, '$S_{345GHz,dust}$' : S_dust , '$M_{Gas}$' : np.log10(M_gas) , '$\Delta M_{gas}$': M_gas_err/(M_gas *np.log(10)),'$R_{hl}$' : r_hl, '$M_{tot}$' : np.log10(M_tot)}
@@ -359,7 +371,7 @@ table2 = {'Region_ID':id, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz
 table2 = pd.DataFrame(table2)
 print(table2.to_latex(float_format="{:.3f}".format))
 
-all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
+all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err,'Gas surface density': surface, 'Gas_surface_density_error':surface_err, 'optical_extinction': A_v, 'optical_extinction_error': A_v_err }
 for_csv = pd.DataFrame(all_info)
 for_csv.to_csv('3_RMS_all_info_double.csv', float_format="{:.3f}".format)
 
