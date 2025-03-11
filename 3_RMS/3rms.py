@@ -361,7 +361,7 @@ print(df)
 print(df.to_latex(float_format="{:.3f}".format, index_names= 'Region ID'))
 ## flux,flux_err,flux345, flux345_err, S_ff100,err_S_ff100 in mJy
 ## s_dust,eS_dust in Jy
-id = np.linspace(1.0,17.0,17)
+id = np.linspace(1,17,17)
 print(id)
 table1 = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err,'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err }
 table1 = pd.DataFrame(table1)
@@ -375,3 +375,5 @@ all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz'
 for_csv = pd.DataFrame(all_info)
 for_csv.to_csv('3_RMS_all_info_double.csv', float_format="{:.3f}".format)
 
+for i in range(0,len(id)):
+    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.3f}".format(flux[i]) ,'$\pm$',  "{:.3f}".format(flux_err[i]), '&' ,"{:.3f}".format(flux345[i]) ,'$\pm$',  "{:.3f}".format(flux345_err[i]), '&' ,"{:.1f}".format(r_hl[i]) ,'$\pm$' , "{:.1f}".format(r_hl_err[i]),'\\\\' )
