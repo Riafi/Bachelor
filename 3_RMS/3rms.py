@@ -165,25 +165,37 @@ radi3 = pd.read_csv('data_band7_3rms_double.csv')
 a = radi[' bmaj'].to_numpy()
 ar =np.take(a,[0,1,2,3,4,5,6,13,14,15,16])
 b = radi3[' bmaj'].to_numpy()
-b=b[7:13]
-bmaj = np.append(ar,b)
+br=b[7:13]
+bmaj = np.append(ar,br)
 #print (bmaj)
 c = radi['bmin'].to_numpy()
 cr = np.take(c,[0,1,2,3,4,5,6,13,14,15,16])
 d = radi3['bmin'].to_numpy()
-d=d[7:13]
-bmin = np.append(cr,d)
+dr=d[7:13]
+bmin = np.append(cr,dr)
 ae = radi[' bmaj_error'].to_numpy()
 aer = np.take(ae,[0,1,2,3,4,5,6,13,14,15,16])
 be = radi3[' bmaj_error'].to_numpy()
-be=be[7:13]
-bmaj_err = np.append(aer,be)
+ber=be[7:13]
+bmaj_err = np.append(aer,ber)
 #print (bmaj)
 ce = radi['bmin_error'].to_numpy()
 cer = np.take(ce,[0,1,2,3,4,5,6,13,14,15,16])
 de = radi3['bmin_error'].to_numpy()
-de=de[7:13]
-bmin_err = np.append(cer,de)
+der=de[7:13]
+bmin_err = np.append(cer,der)
+e = radi['deconvolved_not deconvolved']
+f = radi3['deconvolved_not deconvolved']
+
+bmaj_100 = a
+bmaj_100_err =ae
+bmin_100 = c
+bmin_100_err = ce
+
+bmaj_345 = b
+bmaj_345_err = be
+bmin_345 = d
+bmin_345_err = de
 
 print(bmaj,bmin)
 #read in the peak intensity of the regions and their error
@@ -275,6 +287,14 @@ m=np.linspace(10**4,10**9,1000)
 r_beam  = 0*m+ 9.470899419552286
 r_beam_better = 0*m +4.73544971
 r_beam_half =0*m +0.5*4.73544971/2
+
+r_hl_100 = np.sqrt(((np.deg2rad(bmaj_100/3600))/2 * dis)*((np.deg2rad(bmin_100/3600))/2 * dis))
+r_hl_100_err = np.sqrt((((np.deg2rad(bmin_100_err/3600))/2 * dis)**2*((np.deg2rad(bmaj_100/3600))/2 * dis)**2 + ((np.deg2rad(bmaj_100_err/3600))/2 * dis)**2 * ((np.deg2rad(bmin_100/3600))/2 * dis)**2)/(((np.deg2rad(bmin_100/3600))/2 * dis)*((np.deg2rad(bmaj_100/3600))/2 * dis)))
+
+r_hl_345 = np.sqrt(((np.deg2rad(bmaj_345/3600))/2 * dis)*((np.deg2rad(bmin_345/3600))/2 * dis))
+r_hl_345_err = np.sqrt((((np.deg2rad(bmin_345_err/3600))/2 * dis)**2*((np.deg2rad(bmaj_345/3600))/2 * dis)**2 + ((np.deg2rad(bmaj_345_err/3600))/2 * dis)**2 * ((np.deg2rad(bmin_345/3600))/2 * dis)**2)/(((np.deg2rad(bmin_345/3600))/2 * dis)*((np.deg2rad(bmaj_345/3600))/2 * dis)))
+print('radi of 100GHz', r_hl_100)
+print('radi of 345GHz', r_hl_345)
 
 fig,ax = plt.subplots()
 ax.margins(0)
@@ -371,9 +391,9 @@ table2 = {'Region_ID':id, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz
 table2 = pd.DataFrame(table2)
 print(table2.to_latex(float_format="{:.3f}".format))
 
-all_info = {'Region_ID':id,'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err,'Gas surface density': surface, 'Gas_surface_density_error':surface_err, 'optical_extinction': A_v, 'optical_extinction_error': A_v_err }
+all_info = {'Region_ID':id, 'right_Ascension':RA, 'Declination':dec,'flux_100GHz' : flux ,'flux_100GHz_error':flux_err, 'freefree_flux_100GHz' : S_ff100,'freefree_flux_100GHz_error':err_S_ff100, 'flux_345GHz' : flux345,'flux_345GHz_error': flux345_err, 'dust_flux_345GHz' : S_dust*10**3, 'dust_flux_345GHz_error':eS_dust*10**3, 'gas_Mass':np.log10(M_gas), 'gas_Mass_error':M_gas_err/(M_gas *np.log(10)),'stellar_Mass': np.log10(M_starh),'stellar_Mass_error':M_starh_err/(M_starh *np.log(10)), 'gas_fraction': gas_fraction, 'gas_fraction_error':gas_fraction_err,'total_Mass':np.log10(M_tot), 'total_Mass_error':M_tot_err/(M_tot *np.log(10)), 'halflight_Radius':r_hl, 'halflight_Radius_error':r_hl_err,'Gas surface density': surface, 'Gas_surface_density_error':surface_err, 'optical_extinction': A_v, 'optical_extinction_error': A_v_err }
 for_csv = pd.DataFrame(all_info)
 for_csv.to_csv('3_RMS_all_info_double.csv', float_format="{:.3f}".format)
 
 for i in range(0,len(id)):
-    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.3f}".format(flux[i]) ,'$\pm$',  "{:.3f}".format(flux_err[i]), '&' ,"{:.3f}".format(flux345[i]) ,'$\pm$',  "{:.3f}".format(flux345_err[i]), '&' ,"{:.1f}".format(r_hl[i]) ,'$\pm$' , "{:.1f}".format(r_hl_err[i]),'\\\\' )
+    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.3f}".format(flux[i]) ,'$\pm$',  "{:.3f}".format(flux_err[i]), '&' ,"{:.3f}".format(flux345[i]) ,'$\pm$',  "{:.3f}".format(flux345_err[i]), '&' ,"{:.1f}".format(r_hl_100[i]) ,'$\pm$' , "{:.1f}".format(r_hl_100_err[i]),'&' ,"{:.1f}".format(r_hl_345[i]) ,'$\pm$' , "{:.1f}".format(r_hl_345_err[i]),'\\\\' )
