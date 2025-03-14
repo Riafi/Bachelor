@@ -14,16 +14,16 @@ dis=44*10**6
 #beam_values reads in the data from the 100GHz sourceband
 beam_values = pd.read_csv('data_band3_3rms_flux_double.csv')
 flux = beam_values['flux_value'].to_numpy()
-flux= 10**3*flux
+flux= 2*10**3*flux
 
 flux_err = beam_values['flux_error'].to_numpy()
-flux_err = 10**3*flux_err
+flux_err = 2*10**3*flux_err
 #beam_345 reads in the data from the 345GHz sourceband
 beam_345 = pd.read_csv('data_band7_3rms_flux_double.csv')
 flux345 = beam_345['flux_value'].to_numpy()
-flux345=10**3*flux345
+flux345= 2*10**3*flux345
 flux345_err = beam_345['flux_error'].to_numpy()
-flux345_err = flux345_err*10**3
+flux345_err = 2*flux345_err*10**3
 
 #calculating the dust contribution at 345 GHz for the YMCs
 S_ff = (flux*10**(-3))*((345/100)**(-0.1))
@@ -258,6 +258,16 @@ plt.ylabel('$M_{stellar}$ [$M_{\odot}$] using Sun et al. equation')
 plt.savefig('stellar mass comparison_double.pdf')
 plt.show()
 
+######### M_gas vs. M_star plot ################
+fig,ax = plt.subplots()
+
+plt.errorbar( M_gas, M_starh, xerr=M_gas_err, yerr= M_starh_err, color = 'midnightblue', linestyle='none')
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('$M_{gas}$ [$M_{\odot}$]')
+plt.ylabel('$M_{star}$ [$M_{\odot}$]')
+plt.savefig('starmasstogasmass_3rms_double.pdf')
+plt.show()
 
 
 #total mass

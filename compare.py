@@ -15,27 +15,27 @@ radi = pd.read_csv('3_RMS/data_band3_3rms _double.csv')
 radi3 = pd.read_csv('3_RMS/data_band7_3rms_double.csv')
 #read in the major and minor axis
 a = radi[' bmaj'].to_numpy()
-ar =np.take(a,[0,1,2,3,4,5,6,7,8,13,14,15,16])
+ar =np.take(a,[0,1,2,3,4,5,6,7,8,9,12,13,14,15,16,17])
 b = radi3[' bmaj'].to_numpy()
-b=b[9:13]
-bmaj = np.append(ar,b)
+br=np.take(b,[10,11,18,19])
+bmaj = np.append(ar,br)
 #print (bmaj)
 c = radi['bmin'].to_numpy()
-cr = np.take(c,[0,1,2,3,4,5,6,7,8,13,14,15,16])
+cr = np.take(c,[0,1,2,3,4,5,6,7,8,9,12,13,14,15,16,17])
 d = radi3['bmin'].to_numpy()
-d=d[9:13]
-bmin = np.append(cr,d)
+dr=np.take(d,[10,11,18,19])
+bmin = np.append(cr,dr)
 ae = radi[' bmaj_error'].to_numpy()
-aer = np.take(ae,[0,1,2,3,4,5,6,7,8,13,14,15,16])
+aer = np.take(ae,[0,1,2,3,4,5,6,7,8,9,12,13,14,15,16,17])
 be = radi3[' bmaj_error'].to_numpy()
-be=be[9:13]
-bmaj_err = np.append(aer,be)
+ber=np.take(be,[10,11,18,19])
+bmaj_err = np.append(aer,ber)
 #print (bmaj)
 ce = radi['bmin_error'].to_numpy()
-cer = np.take(ce,[0,1,2,3,4,5,6,7,8,13,14,15,16])
+cer = np.take(ce,[0,1,2,3,4,5,6,7,8,9,12,13,14,15,16,17])
 de = radi3['bmin_error'].to_numpy()
-de=de[9:13]
-bmin_err = np.append(cer,de)
+der=np.take(de,[10,11,18,19])
+bmin_err = np.append(cer,der)
 #calculate radii
 bmaj_rad = (np.deg2rad(bmaj/3600))/2 * dis
 bmaj_rad_err = (np.deg2rad(bmaj_err/3600))/2 * dis
@@ -55,7 +55,7 @@ f = 345*10**9         #frequency in Hz
 
 fwhm= ((1.02*(light/(f*dia))))*dis/2
 print(fwhm)
-beam = np.sqrt(np.deg2rad(0.0452447/3600)* np.deg2rad(0.0435672/3600))
+beam = np.sqrt(np.deg2rad(0.0524177/3600)* np.deg2rad(0.0474956/3600))
 print (beam)
 hwhm = beam * dis/2
 print (hwhm)
