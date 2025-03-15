@@ -414,4 +414,4 @@ for_csv = pd.DataFrame(all_info)
 for_csv.to_csv('3_RMS_all_info_double.csv', float_format="{:.3f}".format)
 
 for i in range(0,len(id)):
-    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.3f}".format(flux[i]) ,'$\pm$',  "{:.3f}".format(flux_err[i]), '&' ,"{:.3f}".format(flux345[i]) ,'$\pm$',  "{:.3f}".format(flux345_err[i]), '&' ,"{:.1f}".format(r_hl_100[i]) ,'$\pm$' , "{:.1f}".format(r_hl_100_err[i]),'&' ,"{:.1f}".format(r_hl_345[i]) ,'$\pm$' , "{:.1f}".format(r_hl_345_err[i]),'\\\\' )
+    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.2f}".format(flux[i]) ,'$\pm$',  "{:.2f}".format(flux_err[i]), '&' ,"{:.2f}".format(flux345[i]) ,'$\pm$',  "{:.2f}".format(flux345_err[i]), '&' ,"{:.2f}".format(S_ff100[i]) ,'$\pm$',  "{:.2f}".format(err_S_ff100[i]), '&',"{:.2f}".format((S_dust*10**3)[i]) ,'$\pm$',  "{:.2f}".format((eS_dust*10**3)[i]), '&',"{:.1f}".format(r_hl_100[i]) ,'$\pm$' , "{:.1f}".format(r_hl_100_err[i]),'&' ,"{:.1f}".format(r_hl_345[i]) ,'$\pm$' , "{:.1f}".format(r_hl_345_err[i]), '\\\\' )
