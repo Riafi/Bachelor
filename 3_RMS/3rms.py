@@ -259,11 +259,17 @@ plt.savefig('stellar mass comparison_double.pdf')
 plt.show()
 
 ######### M_gas vs. M_star plot ################
-fig,ax = plt.subplots()
+M_s = np.linspace(10**4,3*10**7, 1000)
+M_r = M_s
 
-plt.errorbar( M_gas, M_starh, xerr=M_gas_err, yerr= M_starh_err, color = 'midnightblue', linestyle='none')
+fig,ax = plt.subplots()
+ax.margins(0)
+plt.errorbar( M_gas, M_starh, xerr=np.abs(M_gas_err/(M_gas*np.log(10))), yerr= np.abs(M_starh_err/(M_starh*np.log(10))), color = 'midnightblue',marker='+',capsize=2, linestyle='none', zorder = 3.5)
+plt.plot(M_r,M_s, color='lightgray',linestyle='--', zorder=2.5)
 plt.xscale('log')
 plt.yscale('log')
+ax.set_xlim(left = 10**4, right =3*10**7, auto = True)
+ax.set_ylim(bottom = 10**4 , top = 3*10**7,auto =True)
 plt.xlabel('$M_{gas}$ [$M_{\odot}$]')
 plt.ylabel('$M_{star}$ [$M_{\odot}$]')
 plt.savefig('starmasstogasmass_3rms_double.pdf')
