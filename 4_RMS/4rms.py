@@ -341,11 +341,13 @@ plt.show()
 ######### M_gas vs. M_star plot ################
 M_s = np.linspace(10**4,6*10**7, 1000)
 M_r = M_s
+M_33r = 2* M_s
 
 fig,ax = plt.subplots()
 ax.margins(0)
 plt.errorbar( M_gas, M_starh, xerr=np.abs(M_gas_err/(M_gas*np.log(10))), yerr= np.abs(M_starh_err/(M_starh*np.log(10))), color = 'midnightblue',marker='+',capsize=2, linestyle='none', zorder = 3.5)
 plt.plot(M_r,M_s, color='lightgray',linestyle='--', zorder=2.5)
+plt.plot(M_33r,M_s, color='lightgray',linestyle='dotted', zorder=2.5)
 plt.xscale('log')
 plt.yscale('log')
 ax.set_xlim(left = 3*10**5, right =6*10**7, auto = True)
@@ -379,7 +381,7 @@ M_tot_err_plot=M_tot_err[np.where(r_hl_err/(r_hl*np.log(10))<100)]
 print ('error of the halflight radius' ,r_hl_err_plot/(r_hl_plot*np.log(10)))
 print('not used data in diagramm:',r_hl[np.where(r_hl_err/(r_hl*np.log(10))>100)])
 print('beam radii is :', r_hl, r_hl_err)
-m=np.linspace(10**4,10**9,1000)
+m=np.linspace(10**3,10**9,1000)
 r_beam  = 0*m+ 9.470899419552286
 r_beam_better = 0*m +4.73544971
 r_beam_half =0*m +0.5*4.73544971/2
@@ -392,53 +394,89 @@ r_hl_345_err = np.sqrt((((np.deg2rad(bmin_345_err/3600))/2 * dis)**2*((np.deg2ra
 print('radi of 100GHz', r_hl_100)
 print('radi of 345GHz', r_hl_345)
 
+#leroy et al
+r_hl_le = np.array([2.7,1.2,2.6,2.5,2.1,2.1,2.9,1.9,2.6,3.5,2.9,4.3,1.6,1.9])
+r_hl_le_err = np.array([0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3])
+
+m_le =np.array([4.3,4.3,4.1,5.0,5.4,5.3,4.5,4.8,5.5,5.3,5.6,6.0,4.8,5.5])
+m_le = 10**(m_le)
+
+#sun et al
+r_hl_sun = np.array([4.3,2.9,3.7,3.3,1.4,3.5,6.0,4.6,4.1,2.6,4.0,4.5,4.5,2.9,4.0,3.4,4.2,5.9])
+r_hl_sun_err = np.array([0.6,1.5,0.4,0.3,3.4,0.6,1.0,0.7,1.2,1.1,1.6,0.7,0.7,1.3,0.6,0.4,1.7,0.9])
+
+m_sun = np.array([4.4,4.6,4.4,4.3,4.6,5.0,5.0,4.5,4.4,4.4,4.4,4.4,4.5,4.6,5.0,4.3,4.8,5.1])
+m_sun = 10**(m_sun)
+
+#he et al
+r_hl_he =np.array([4.5,6.4,9.1,15,7.5,3.2])
+r_hl_he_err =np.array([0.5,1.1,2.1,3,1.6,1.1])
+
+m_he = np.array([6.2,6.0,5.8,5.7,5.1,5.5])
+m_he = 10**(m_he)
+m_he_err = np.array([0.01,0.03,0.05,0.08, 0.001,0.05])
+
+#emig et al.
+r_hl_emig =np.array([3.0,2.6,3.1,2.5,2.9,2.7,2.4,2.4,2.9,1.4,2.7,2.5,2.2,2.5,2.3,3.1,2.4,3.7,3.1,2.4,2.6,3.1,3.9,3.4,2.2,4.0,2.9])
+m_emig = np.array([5.1,5.2,5.2,4.7,5.0,5.1,5.5,5.1,5.1,5.0,5.2,5.5,5.1,5.0,5.1,5.7,4.4,5.3,4.3,5.7,5.2,4.6,5.2,5.3,5.2,5.0,5.4])
+m_emig =10**(m_emig)
+
+
+
+############# tot mass vs hl radius ##################
+
 fig,ax = plt.subplots()
 ax.margins(0)
-plt.errorbar(M_tot_plot,r_hl_plot, yerr = r_hl_err_plot/(r_hl_plot*np.log(10)), xerr= np.abs(M_tot_err_plot/(M_tot_plot*np.log(10))),  color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
+plt.errorbar(M_starh,r_hl_plot, yerr = r_hl_err_plot/(r_hl_plot*np.log(10)), xerr= np.abs(M_starh_err/(M_starh*np.log(10))),  color='midnightblue', marker='+',markersize =10, capsize=2,  linestyle='none', zorder = 3.5)
 plt.plot(m,r_beam_better, color='lightgray',linestyle='--', zorder=2.5)
 plt.text(0.58, 0.6, 'Radius of the restoring beam',color = 'dimgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
-plt.text(0.525, 0.225, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.text(0.525, 0.2, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.scatter(m_sun, r_hl_sun, color ='cornflowerblue', marker ='o', label = 'NGC3351 (Sun et al. 2024)', zorder = 3)
+plt.scatter(m_he, r_hl_he, color = 'blueviolet', marker = 's', label ='Antennae (He et al. 2022)', zorder = 3)
+plt.scatter(m_emig, r_hl_emig, color = 'plum', marker ='*', label = 'NGC4945 (Emig et al. 2020)', zorder = 3)
+plt.scatter(m_le, r_hl_le, color='teal', marker='D', label = 'NGC253 (Levy et al. 2021)', zorder = 3)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$M_{tot}$ [$M_{\odot}$]' ,fontsize =14 )
+plt.xlabel('$M_{\star}$ [$M_{\odot}$]' ,fontsize =14 )
 plt.ylabel('$R_{hl}$ [pc]', fontsize = 14)
-ax.set_xlim(left = 5*10**5 , right =5*10**7, auto = True)
-ax.set_ylim(bottom = 5*10**(-1) , top = 1*10**1 ,auto =True)
-plt.savefig('totalmasstohalflightradius_4rms.pdf')
+ax.set_xlim(left = 5*10**3 , right =5*10**7, auto = True)
+ax.set_ylim(bottom = 5*10**(-1) , top = 3*10**1 ,auto =True)
+ax.legend()
+plt.savefig('starmasstohalflightradius_4rms.pdf')
 plt.show()
  
 ################halflight radii to total mass sorted by visiblity in frequency bands#################
 r_band3 =np.take(r_hl,[0,1,2,3,6,7,8,9,10])
-M_band3=np.take(M_tot,[0,1,2,3,6,7,8,9,10])
+M_band3=np.take(M_starh,[0,1,2,3,6,7,8,9,10])
 r_band3err =np.take(r_hl_err,[0,1,2,3,6,7,8,9,10])
-M_band3err =np.take(M_tot_err,[0,1,2,3,6,7,8,9,10])
+M_band3err =np.take(M_starh_err,[0,1,2,3,6,7,8,9,10])
 r_band37= np.take(r_hl,[4,5])
-M_band37= np.take(M_tot,[4,5])
+M_band37= np.take(M_starh,[4,5])
 r_band37err = np.take(r_hl_err,[4,5])
-M_band37err = np.take(M_tot_err,[4,5])
+M_band37err = np.take(M_starh_err,[4,5])
 r_band7=np.take(r_hl,[11,12])
-M_band7=np.take(M_tot,[11,12])
+M_band7=np.take(M_starh,[11,12])
 r_band7err =np.take(r_hl_err,[11,12])
-M_band7err =np.take(M_tot_err,[11,12])
+M_band7err =np.take(M_starh_err,[11,12])
 
 fig,ax = plt.subplots()
 ax.margins(0)
-plt.errorbar(M_band3,r_band3, yerr = r_band3err/(r_band3*np.log(10)), xerr= np.abs(M_band3err/(M_band3*np.log(10))),  color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz')
-plt.errorbar(M_band37[np.where(r_band37 > 0.001)],r_band37[np.where(r_band37 > 0.001)], yerr = r_band37err[np.where(r_band37 > 0.001)]/(r_band37[np.where(r_band37 > 0.001)]*np.log(10)), xerr= np.abs(M_band37err[np.where(r_band37 > 0.001)]/(M_band37[np.where(r_band37 > 0.001)]*np.log(10))),  color='blueviolet', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz & 345GHz')
-plt.errorbar(M_band7[np.where(r_band7 > 0.001)],r_band7[np.where(r_band7 > 0.001)], yerr = r_band7err[np.where(r_band7 > 0.001)]/(r_band7[np.where(r_band7 > 0.001)]*np.log(10)), xerr= np.abs(M_band7err[np.where(r_band7 > 0.001)]/(M_band7[np.where(r_band7 > 0.001)]*np.log(10))),  color='cornflowerblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5,label ='345GHz')
+plt.errorbar(M_band3,r_band3, yerr = r_band3err/(r_band3*np.log(10)), xerr= np.abs(M_band3err/(M_band3*np.log(10))),  color='midnightblue', marker='+', markersize =8, capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz')
+plt.errorbar(M_band37[np.where(r_band37 > 0.001)],r_band37[np.where(r_band37 > 0.001)], yerr = r_band37err[np.where(r_band37 > 0.001)]/(r_band37[np.where(r_band37 > 0.001)]*np.log(10)), xerr= np.abs(M_band37err[np.where(r_band37 > 0.001)]/(M_band37[np.where(r_band37 > 0.001)]*np.log(10))),  color='blueviolet', marker='+',markersize =8,capsize=2,  linestyle='none', zorder = 3.5,label ='100GHz & 345GHz')
+plt.errorbar(M_band7[np.where(r_band7 > 0.001)],r_band7[np.where(r_band7 > 0.001)], yerr = r_band7err[np.where(r_band7 > 0.001)]/(r_band7[np.where(r_band7 > 0.001)]*np.log(10)), xerr= np.abs(M_band7err[np.where(r_band7 > 0.001)]/(M_band7[np.where(r_band7 > 0.001)]*np.log(10))),  color='cornflowerblue', marker='+',markersize =8,capsize=2,  linestyle='none', zorder = 3.5,label ='345GHz')
 plt.plot(m,r_beam_better, color='dimgray',linestyle='--', zorder=2.5)
 plt.text(0.58, 0.6, 'Radius of the restoring beam',color = 'dimgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
-plt.text(0.525, 0.225, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.text(0.525, 0.2, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$M_{tot}$ [$M_{\odot}$]', fontsize = 14)
+plt.xlabel('$M_{\star}$ [$M_{\odot}$]', fontsize = 14)
 plt.ylabel('$R_{hl}$ [pc]', fontsize = 14)
-ax.set_xlim(left = 5*10**5 , right =5*10**7, auto = True)
-ax.set_ylim(bottom = 5*10**(-1) , top = 1*10**1 ,auto =True)
+ax.set_xlim(left = 5*10**4 , right =5*10**7, auto = True)
+ax.set_ylim(bottom = 5*10**(-1) , top = 3*10**1 ,auto =True)
 ax.legend()
-plt.savefig('totalmasstohalflightradius_4rms_bands.pdf')
+plt.savefig('starmasstohalflightradius_4rms_bands.pdf')
 plt.show()
 
 
