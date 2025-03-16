@@ -86,8 +86,8 @@ ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zord
 ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$S_{100}$ [$m$Jy]')
-plt.ylabel('$S_{345}$ [$m$Jy]')
+plt.xlabel('$S_{100}$ [$m$Jy]', fontsize = 14)
+plt.ylabel('$S_{345}$ [$m$Jy]', fontsize = 14)
 ax.set_xlim(left = 0.006 , right =5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
 plt.savefig('S_100_345_contributions_4rms.pdf')
@@ -140,8 +140,8 @@ ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zord
 ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$S_{100}$ [$m$Jy]')
-plt.ylabel('$S_{345}$ [$m$Jy]')
+plt.xlabel('$S_{100}$ [$m$Jy]', fontsize = 14)
+plt.ylabel('$S_{345}$ [$m$Jy]', fontsize = 14)
 ax.set_xlim(left = 0.006 , right =5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
 ax.legend()
@@ -178,8 +178,8 @@ ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zord
 ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$S_{100GHz, ff}$ [$m$Jy]')
-plt.ylabel('$S_{345GHz,dust}$ [$m$Jy]')
+plt.xlabel('$S_{100GHz, ff}$ [$m$Jy]', fontsize = 14)
+plt.ylabel('$S_{345GHz,dust}$ [$m$Jy]', fontsize = 14)
 ax.set_xlim(left = 0.006 , right =5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
 plt.savefig('S_free_dust_contributions_4rms.pdf')
@@ -229,8 +229,8 @@ ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zord
 ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$S_{100GHz,ff}$ [$m$Jy]')
-plt.ylabel('$S_{345,dust}$ [$m$Jy]')
+plt.xlabel('$S_{100GHz,ff}$ [$m$Jy]', fontsize = 14)
+plt.ylabel('$S_{345,dust}$ [$m$Jy]', fontsize = 14)
 ax.set_xlim(left = 0.006 , right =5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
 ax.legend()
@@ -286,10 +286,11 @@ peak_e_345 = 10**3*peak_e_345 #converting Jy/beam into mJy/beam
 
 
 #calculate gas temperature
-T_gas = 11.07/(np.log(1+ 11.07/(45+0.195)))
-T_gas_10 = 11.07/(np.log(1+ 11.07/(45+0.195)))*10
-T_gas_err = 122.545*0.45/((45+0.195)*(45+11.265)*np.log(11.07/(45+0.195)+1)**2)   #error of gas Temperature
+T_gas = 11.07/(np.log(1+ 11.07/(40+0.195)))
+T_gas_10 = 11.07/(np.log(1+ 11.07/(40+0.195)))*10
+T_gas_err = 20*(122.545/((0.195 + 40)* (11.265 + 40) *(np.log(1 + 11.07/(0.195 + 4))**2)) ) #error of gas Temperature
 print('gas Temperature at 345GHz is', T_gas)
+print (T_gas_err)
 
 #calculate dust mass using equation 6 from paper
 M_dust= 74220*S_dust*(44**2)*((np.exp(17/T_gas)-1)/0.9)
@@ -324,7 +325,7 @@ M_starh_err=Q_0h_err/(4.0*10**46)
 print ('ionizing photon number and Stellar mass', Q_0h, (M_starh))
 
 print('max and min stellar mass',(min(M_starh)), max(M_starh))
-mass=np.linspace(min(M_starh), max(M_starh), 1000)
+mass=np.linspace(min(M_starh), 6*10**7, 1000)
 mas =mass
 fig,ax=plt.subplots()
 plt.errorbar(M_starh,M_stars,xerr=M_starh_err, yerr=Mstars_err, color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
@@ -338,7 +339,7 @@ plt.savefig('stellar mass comparison_4rms.pdf')
 plt.show()
 
 ######### M_gas vs. M_star plot ################
-M_s = np.linspace(10**4,3*10**7, 1000)
+M_s = np.linspace(10**4,6*10**7, 1000)
 M_r = M_s
 
 fig,ax = plt.subplots()
@@ -347,10 +348,10 @@ plt.errorbar( M_gas, M_starh, xerr=np.abs(M_gas_err/(M_gas*np.log(10))), yerr= n
 plt.plot(M_r,M_s, color='lightgray',linestyle='--', zorder=2.5)
 plt.xscale('log')
 plt.yscale('log')
-ax.set_xlim(left = 2*10**5, right =3*10**7, auto = True)
-ax.set_ylim(bottom = 2*10**5 , top = 3*10**7,auto =True)
-plt.xlabel('$M_{gas}$ [$M_{\odot}$]')
-plt.ylabel('$M_{star}$ [$M_{\odot}$]')
+ax.set_xlim(left = 3*10**5, right =6*10**7, auto = True)
+ax.set_ylim(bottom = 3*10**5 , top = 6*10**7,auto =True)
+plt.xlabel('$M_{gas}$ [$M_{\odot}$]' ,fontsize = 14)
+plt.ylabel('$M_{star}$ [$M_{\odot}$]' , fontsize = 14)
 plt.savefig('starmasstogasmass_4rms.pdf')
 plt.show()
 
@@ -400,8 +401,8 @@ plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
 plt.text(0.525, 0.225, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
-plt.ylabel('$R_{hl}$ [pc]')
+plt.xlabel('$M_{tot}$ [$M_{\odot}$]' ,fontsize =14 )
+plt.ylabel('$R_{hl}$ [pc]', fontsize = 14)
 ax.set_xlim(left = 5*10**5 , right =5*10**7, auto = True)
 ax.set_ylim(bottom = 5*10**(-1) , top = 1*10**1 ,auto =True)
 plt.savefig('totalmasstohalflightradius_4rms.pdf')
@@ -432,8 +433,8 @@ plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
 plt.text(0.525, 0.225, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlabel('$M_{tot}$ [$M_{\odot}$]')
-plt.ylabel('$R_{hl}$ [pc]')
+plt.xlabel('$M_{tot}$ [$M_{\odot}$]', fontsize = 14)
+plt.ylabel('$R_{hl}$ [pc]', fontsize = 14)
 ax.set_xlim(left = 5*10**5 , right =5*10**7, auto = True)
 ax.set_ylim(bottom = 5*10**(-1) , top = 1*10**1 ,auto =True)
 ax.legend()
@@ -493,5 +494,8 @@ for_csv = pd.DataFrame(all_info)
 for_csv.to_csv('4_RMS_all_info.csv', float_format="{:.3f}".format)
 
 for i in range(0,len(id)):
-    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.2f}".format(flux[i]) ,'$\pm$',  "{:.2f}".format(flux_err[i]), '&' ,"{:.2f}".format(flux345[i]) ,'$\pm$',  "{:.2f}".format(flux345_err[i]), '&' ,"{:.2f}".format(10**3*S_ff100[i]) ,'$\pm$',  "{:.2f}".format(10**3*err_S_ff100[i]), '&',"{:.2f}".format((S_dust*10**3)[i]) ,'$\pm$',  "{:.2f}".format((eS_dust*10**3)[i]), '&',"{:.1f}".format(10**2*(np.sqrt((bmaj_100/2)*(bmin_100/2)))[i]) ,'$\pm$' , "{:.1f}".format(10**2*(np.sqrt(((((bmin_100_err))/2 )**2*(((bmaj_100))/2 )**2 + (((bmaj_100_err))/2 )**2 * (((bmin_100))/2 )**2)/((((bmin_100))/2 )*(((bmaj_100))/2 ))))[i]),'&' ,"{:.1f}".format(10**2*(np.sqrt((bmaj_345/2)*(bmin_345/2)))[i]) ,'$\pm$' , "{:.1f}".format(10**2*(np.sqrt(((((bmin_345_err))/2 )**2*(((bmaj_345))/2 )**2 + (((bmaj_345_err))/2 )**2 * (((bmin_345))/2 )**2)/((((bmin_345))/2 )*(((bmaj_345))/2 ))))[i]), '\\\\' )
+    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.2f}".format(flux[i]) ,'$\pm$',  "{:.2f}".format(flux_err[i]), '&' ,"{:.2f}".format(flux345[i]) ,'$\pm$',  "{:.2f}".format(flux345_err[i]), '&' ,"{:.2f}".format(10**3*S_ff100[i]) ,'$\pm$',  "{:.2f}".format(10**3*err_S_ff100[i]), '&',"{:.2f}".format((S_dust*10**3)[i]) ,'$\pm$',  "{:.2f}".format((eS_dust*10**3)[i]), '&',"{:.1f}".format(10**2*(np.sqrt((bmaj_100*bmin_100)/2))[i]) ,'$\pm$' , "{:.1f}".format(10**2*np.sqrt((bmin_100_err/2 )**2*(bmaj_100/2 )**2 + (bmaj_100_err/2 )**2 * ((bmin_100)/2 **2)/((bmin_100/2 )*(bmaj_100/2)))[i]),'&' ,"{:.1f}".format(10**2*(np.sqrt((bmaj_345*bmin_345)/2))[i]) ,'$\pm$' , "{:.1f}".format(10**2*(np.sqrt((bmin_345_err/2)**2 *(bmaj_345/2)**2 + (bmaj_345_err/2) **2 * ((bmin_345/2)**2)/((bmin_345/2)*(bmaj_345/2 ))))[i]), '\\\\' )
 
+
+for i in range(0,len(id)):
+    print("{:.0f}".format(id[i]), '&',"{:.1f}".format(r_hl_100[i]),'$\pm$', "{:.1f}".format(r_hl_100_err[i]), '&',"{:.1f}".format(r_hl_345[i]),'$\pm$', "{:.1f}".format(r_hl_345_err[i]), '&', "{:.1f}".format(np.log10(M_gas)[i]),'$\pm$', "{:.1f}".format(np.abs(M_gas_err/(M_gas*np.log(10)))[i]), '&',"{:.1f}".format(np.log10(M_starh)[i]),'$\pm$', "{:.1f}".format(np.abs(M_starh_err/(M_starh*np.log(10)))[i]) , '&' , "{:.1f}".format(np.log10(M_tot)[i]),'$\pm$', "{:.1f}".format(np.abs(M_tot_err/(M_tot*np.log(10)))[i]), '&' , "{:.0f}".format(gas_fraction[i]),'$\pm$', "{:.0f}".format(gas_fraction_err[i]), '&' , "{:.0f}".format(10**(-3)*A_v[i]),'$\pm$', "{:.0f}".format(10**(-3)*A_v_err[i]), '\\\\')
