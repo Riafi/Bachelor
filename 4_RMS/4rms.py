@@ -33,17 +33,18 @@ print('345GHz', min(flux345), max(flux345))
 S_ff = (flux*10**(-3))*((345/100)**(-0.1))
 eS_ff = (flux_err*10**(-3))* ( (345/100)**(-0.1)) #error of free free flux density at 345GHz
 S_dust = flux345*10**(-3) -S_ff
-eS_dust = np.sqrt((flux345_err*10**(-3))**2 + (eS_ff*10**(-3))**2) # error of flux density at 345GHz using gauss' error estimation
-print (' percentage of Dust contribution at 345GHz', (S_dust/flux345)*100)
+eS_dust = np.sqrt((flux345_err*10**(-3))**2 + (eS_ff)**2) # error of flux density at 345GHz using gauss' error estimation
+print('dust contribution at 345GHz',10**3* S_dust)
+print (' percentage of Dust contribution at 345GHz', (S_dust/(flux345*10**(-3)))*100)
 
 #calculate free free contribution at 100GHz
-S_dust100 = flux345*(100/345)**(3.5)
-err_S_dust100 = flux345_err*(100/345)**(3.5)  #error of dust emission flux density at 100GHz
-S_ff100 = flux - S_dust100
-err_S_ff100 = np.sqrt(flux_err**2 + err_S_dust100**2)      #error of free free emission flux density at 100GHz
+S_dust100 = (flux345*10**(-3))*(100/345)**(3.5)
+err_S_dust100 = (flux345_err*10**(-3))*(100/345)**(3.5)  #error of dust emission flux density at 100GHz
+S_ff100 = flux*10**(-3) - S_dust100
+err_S_ff100 = np.sqrt((flux_err*10**(-3))**2 + err_S_dust100**2)      #error of free free emission flux density at 100GHz
 print ('dust contribution at 100GHz in flux density', S_dust100)
 print ('freefree contribution',S_ff100)
-print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
+print ('percentage of free free emission at 100GHz', (S_ff100/(flux*10**(-3)))*100)
 
 # calculate the dust and free free emission contributions using formulas from paper(!!!)
 S_100 = np.linspace (0.006,5, 1000)
@@ -89,8 +90,11 @@ plt.xlabel('$S_{100}$ [$m$Jy]')
 plt.ylabel('$S_{345}$ [$m$Jy]')
 ax.set_xlim(left = 0.006 , right =5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
-plt.savefig('S_free_dust_contributions_4rms.pdf')
+plt.savefig('S_100_345_contributions_4rms.pdf')
 plt.show()
+
+
+
 
 ############flux against flux grouped by YMC visibility at diffrent freqencies#########
 f_band3_100 =np.take(flux,[0,1,2,3,6,7,8,9,10])
@@ -141,27 +145,98 @@ plt.ylabel('$S_{345}$ [$m$Jy]')
 ax.set_xlim(left = 0.006 , right =5, auto = True)
 ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
 ax.legend()
-plt.savefig('S_free_dust_contributions_4rms_bands.pdf')
+plt.savefig('S_100_345_contributions_4rms_bands.pdf')
 plt.show()
 
 
+################## free free flux vs dust flux ###################
 
+fig, ax = plt.subplots()
+ax.margins(0)
 
-#calculating the dust contribution at 345 GHz for the YMCs
-S_ff = (flux*10**(-3))*((345/100)**(-0.1))
-eS_ff = (flux_err*10**(-3))* ( (345/100)**(-0.1)) #error of free free flux density at 345GHz
-S_dust = flux345*10**(-3) -S_ff
-eS_dust = np.sqrt((flux345_err*10**(-3))**2 + (eS_ff*10**(-3))**2) # error of flux density at 345GHz using gauss' error estimation
-print (' percentage of Dust contribution at 345GHz', (S_dust/flux345)*100)
+#plotting the flux values from both bands against each other
+plt.errorbar(10**3*S_ff100, 10**3*S_dust, xerr= 10**3*err_S_ff100, yerr=10**3*eS_dust, color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5)
+#plotting the emission contributions for 25%,50% and 100%
+plt.plot(S_100,S_345_25, color ='lightgray',zorder=2.5)
+plt.text(0.18, 0.1, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 
-#calculate free free contribution at 100GHz
-S_dust100 = flux345*(100/345)**(3.5)
-err_S_dust100 = flux345_err*(100/345)**(3.5)  #error of dust emission flux density at 100GHz
-S_ff100 = flux - S_dust100
-err_S_ff100 = np.sqrt(flux_err**2 + err_S_dust100**2)      #error of free free emission flux density at 100GHz
-print ('dust contribution at 100GHz in flux density', S_dust100)
-print ('freefree contribution',S_ff100)
-print ('percentage of free free emission at 100GHz', (S_ff100/flux)*100)
+plt.plot(S_100,S_345_50, color='darkgrey',zorder=2.5)
+plt.text(0.3, 0.1, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100,S_345_100, color = 'dimgray',zorder=2.5)
+plt.text(0.39, 0.57, '$100 \% $ free-free contribution @ 345GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 46, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_25,S_345,  color = 'lightgray',zorder=2.5)
+plt.text(0.025, 0.33, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_50, S_345, color='darkgrey',zorder=2.5)
+plt.text(0.025, 0.49, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_100,S_345, color = 'dimgray',zorder=2.5)
+plt.text(0, 1, '$100 \% $ dust contribution @ 100GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+ax.fill_between(S_100, S_345_25, S_345_50, color = 'lightgray' , alpha =0.2,zorder = 1.5 )
+ax.fill_between(S_100, S_345_50, S_345_100, color = 'dimgray' , alpha =0.2, zorder = 1.5)
+ax.fill_between(S_100, S_345_100, 0, color = 'darkgray' , alpha =0.6, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_25, S_100_50, color ='lightgray', alpha = 0.2, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('$S_{100GHz, ff}$ [$m$Jy]')
+plt.ylabel('$S_{345GHz,dust}$ [$m$Jy]')
+ax.set_xlim(left = 0.006 , right =5, auto = True)
+ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
+plt.savefig('S_free_dust_contributions_4rms.pdf')
+plt.show()
+
+############ ff flux against dust flux grouped by YMC visibility at diffrent freqencies #########
+S_band3_100 =np.take(S_ff100,[0,1,2,3,6,7,8,9,10])
+S_band3_345 =np.take(S_dust,[0,1,2,3,6,7,8,9,10])
+S_band3_100_err =np.take(err_S_ff100,[0,1,2,3,6,7,8,9,10])
+S_band3_345_err =np.take(eS_dust,[0,1,2,3,6,7,8,9,10])
+S_band37_100 = np.take(S_ff100,[4,5])
+S_band37_345 = np.take(S_dust,[4,5])
+S_band37_100_err = np.take(err_S_ff100,[4,5])
+S_band37_345_err = np.take(eS_dust,[4,5])
+S_band7_100 =np.take(S_ff100,[11,12])
+S_band7_345 =np.take(S_dust,[11,12])
+S_band7_100_err =np.take(err_S_ff100,[11,12])
+S_band7_345_err =np.take(eS_dust,[11,12])
+
+print('flux values visible at 4rms at 100',S_band3_100)
+fig, ax = plt.subplots()
+ax.margins(0)
+
+#plotting the flux values from both bands against each other
+plt.errorbar(10**3*S_band3_100, 10**3*S_band3_345, xerr= 10**3*S_band3_100_err, yerr=10**3*S_band3_345_err, color='midnightblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5, label ='100GHz')
+plt.errorbar(10**3*S_band37_100, 10**3*S_band37_345, xerr= 10**3*S_band37_100_err, yerr=10**3*S_band37_345_err, color='blueviolet', marker='+',capsize=2,  linestyle='none', zorder = 3.5, label ='100GHz & 345GHz')
+plt.errorbar(10**3*S_band7_100, 10**3*S_band7_345, xerr= 10**3*S_band7_100_err, yerr=10**3*S_band7_345_err, color='cornflowerblue', marker='+',capsize=2,  linestyle='none', zorder = 3.5 , label = '345GHz')
+#plotting the emission contributions for 25%,50% and 100%
+plt.plot(S_100,S_345_25, color ='lightgray',zorder=2.5)
+plt.text(0.18, 0.1, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+
+plt.plot(S_100,S_345_50, color='darkgrey',zorder=2.5)
+plt.text(0.3, 0.1, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100,S_345_100, color = 'dimgray',zorder=2.5)
+plt.text(0.39, 0.57, '$100 \% $ free-free contribution @ 345GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 46, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_25,S_345,  color = 'lightgray',zorder=2.5)
+plt.text(0.025, 0.33, '$25 \% $',color = 'lightgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_50, S_345, color='darkgrey',zorder=2.5)
+plt.text(0.025, 0.49, '$50 \% $', color ='darkgray',  rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.plot(S_100_100,S_345, color = 'dimgray',zorder=2.5)
+plt.text(0, 1, '$100 \% $ dust contribution @ 100GHz',color = 'dimgray', rotation_mode = 'default' , rotation = 45, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+ax.fill_between(S_100, S_345_25, S_345_50, color = 'lightgray' , alpha =0.2,zorder = 1.5 )
+ax.fill_between(S_100, S_345_50, S_345_100, color = 'dimgray' , alpha =0.2, zorder = 1.5)
+ax.fill_between(S_100, S_345_100, 0, color = 'darkgray' , alpha =0.6, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_25, S_100_50, color ='lightgray', alpha = 0.2, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_50, S_100_100, color ='dimgray', alpha = 0.2, zorder = 1.5)
+ax.fill_betweenx(S_345, S_100_100, 0, color ='darkgray', alpha = 0.6, zorder = 1.5)
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('$S_{100GHz,ff}$ [$m$Jy]')
+plt.ylabel('$S_{345,dust}$ [$m$Jy]')
+ax.set_xlim(left = 0.006 , right =5, auto = True)
+ax.set_ylim(bottom = 0.05 , top = 7 ,auto =True)
+ax.legend()
+plt.savefig('S_free_dust_contributions_4rms_bands.pdf')
+plt.show()
+
 
 radi = pd.read_csv('band3_4rms.csv')
 radi3 = pd.read_csv('band6_4rms.csv')
@@ -229,8 +304,8 @@ M_gas_err = 120*M_dust_err      #error of dust mass
 print('gas Mass is', np.log10(M_gas))
 
 #calculate luminosity of the free free emission using S_ff and distance of the ngc3256 at 44 Mpc
-L_vt = 4 * np.pi * ((44*10**6*3.1*10**18)**2) * S_ff100*10**(-3)*10**(-23)
-L_vt_err = 4*np.pi*(44*10**6*3.1*10**18)**2 * err_S_ff100*10**(-3)*10**(-23)
+L_vt = 4 * np.pi * ((44*10**6*3.1*10**18)**2) * S_ff100*10**(-23)
+L_vt_err = 4*np.pi*(44*10**6*3.1*10**18)**2 * err_S_ff100*10**(-23)
 print ('luminosity ', L_vt) 
 
 #calculate ionizing photon rates using equation 3 from paper sun et al.
@@ -418,5 +493,5 @@ for_csv = pd.DataFrame(all_info)
 for_csv.to_csv('4_RMS_all_info.csv', float_format="{:.3f}".format)
 
 for i in range(0,len(id)):
-    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.2f}".format(flux[i]) ,'$\pm$',  "{:.2f}".format(flux_err[i]), '&' ,"{:.2f}".format(flux345[i]) ,'$\pm$',  "{:.2f}".format(flux345_err[i]), '&' ,"{:.2f}".format(S_ff100[i]) ,'$\pm$',  "{:.2f}".format(err_S_ff100[i]), '&',"{:.2f}".format((S_dust*10**3)[i]) ,'$\pm$',  "{:.2f}".format((eS_dust*10**3)[i]), '&',"{:.1f}".format(10**2*(np.sqrt((bmaj_100/2)*(bmin_100/2)))[i]) ,'$\pm$' , "{:.1f}".format(10**2*(np.sqrt(((((bmin_100_err))/2 )**2*(((bmaj_100))/2 )**2 + (((bmaj_100_err))/2 )**2 * (((bmin_100))/2 )**2)/((((bmin_100))/2 )*(((bmaj_100))/2 ))))[i]),'&' ,"{:.1f}".format(10**2*(np.sqrt((bmaj_345/2)*(bmin_345/2)))[i]) ,'$\pm$' , "{:.1f}".format(10**2*(np.sqrt(((((bmin_345_err))/2 )**2*(((bmaj_345))/2 )**2 + (((bmaj_345_err))/2 )**2 * (((bmin_345))/2 )**2)/((((bmin_345))/2 )*(((bmaj_345))/2 ))))[i]), '\\\\' )
+    print("{:.0f}".format(id[i]), '&', "{:.4f}".format(RA[i]), '&',"{:.4f}".format(dec[i]), '&' , "{:.2f}".format(flux[i]) ,'$\pm$',  "{:.2f}".format(flux_err[i]), '&' ,"{:.2f}".format(flux345[i]) ,'$\pm$',  "{:.2f}".format(flux345_err[i]), '&' ,"{:.2f}".format(10**3*S_ff100[i]) ,'$\pm$',  "{:.2f}".format(10**3*err_S_ff100[i]), '&',"{:.2f}".format((S_dust*10**3)[i]) ,'$\pm$',  "{:.2f}".format((eS_dust*10**3)[i]), '&',"{:.1f}".format(10**2*(np.sqrt((bmaj_100/2)*(bmin_100/2)))[i]) ,'$\pm$' , "{:.1f}".format(10**2*(np.sqrt(((((bmin_100_err))/2 )**2*(((bmaj_100))/2 )**2 + (((bmaj_100_err))/2 )**2 * (((bmin_100))/2 )**2)/((((bmin_100))/2 )*(((bmaj_100))/2 ))))[i]),'&' ,"{:.1f}".format(10**2*(np.sqrt((bmaj_345/2)*(bmin_345/2)))[i]) ,'$\pm$' , "{:.1f}".format(10**2*(np.sqrt(((((bmin_345_err))/2 )**2*(((bmaj_345))/2 )**2 + (((bmaj_345_err))/2 )**2 * (((bmin_345))/2 )**2)/((((bmin_345))/2 )*(((bmaj_345))/2 ))))[i]), '\\\\' )
 
