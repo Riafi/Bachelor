@@ -435,7 +435,7 @@ plt.text(0.525, 0.2, 'half Radius of the restoring beam',color = 'lightgray', ro
 plt.scatter(m_sun, r_hl_sun, color ='cornflowerblue', marker ='o', label = 'NGC3351 (Sun et al. 2024)', zorder = 3)
 plt.scatter(m_he, r_hl_he, color = 'blueviolet', marker = 's', label ='Antennae (He et al. 2022)', zorder = 3)
 plt.scatter(m_emig, r_hl_emig, color = 'plum', marker ='*', label = 'NGC4945 (Emig et al. 2020)', zorder = 3)
-plt.scatter(m_le, r_hl_le, color='teal', marker='D', label = 'NGC253 (Levy et al. 2021)', zorder = 3)
+plt.scatter(m_le, r_hl_le, color='teal', marker='D', label = 'NGC253 (Leroy et al. 2018)', zorder = 3)
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('$M_{\star}$ [$M_{\odot}$]' ,fontsize =14 )
