@@ -384,7 +384,7 @@ print('beam radii is :', r_hl, r_hl_err)
 m=np.linspace(10**3,10**9,1000)
 r_beam  = 0*m+ 9.470899419552286
 r_beam_better = 0*m +4.73544971
-r_beam_half =0*m +0.5*4.73544971/2
+r_beam_half =0*m +0.5*4.73544971
 
 r_hl_100 = np.sqrt(((np.deg2rad(bmaj_100/3600))/2 * dis)*((np.deg2rad(bmin_100/3600))/2 * dis))
 r_hl_100_err = np.sqrt((((np.deg2rad(bmin_100_err/3600))/2 * dis)**2*((np.deg2rad(bmaj_100/3600))/2 * dis)**2 + ((np.deg2rad(bmaj_100_err/3600))/2 * dis)**2 * ((np.deg2rad(bmin_100/3600))/2 * dis)**2)/(((np.deg2rad(bmin_100/3600))/2 * dis)*((np.deg2rad(bmaj_100/3600))/2 * dis)))
@@ -431,7 +431,7 @@ plt.errorbar(M_starh,r_hl_plot, yerr = r_hl_err_plot/(r_hl_plot*np.log(10)), xer
 plt.plot(m,r_beam_better, color='lightgray',linestyle='--', zorder=2.5)
 plt.text(0.58, 0.6, 'Radius of the restoring beam',color = 'dimgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
-plt.text(0.525, 0.2, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.text(0.525, 0.35, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.scatter(m_sun, r_hl_sun, color ='cornflowerblue', marker ='o', label = 'NGC3351 (Sun et al. 2024)', zorder = 3)
 plt.scatter(m_he, r_hl_he, color = 'blueviolet', marker = 's', label ='Antennae (He et al. 2022)', zorder = 3)
 plt.scatter(m_emig, r_hl_emig, color = 'plum', marker ='*', label = 'NGC4945 (Emig et al. 2020)', zorder = 3)
@@ -468,7 +468,7 @@ plt.errorbar(M_band7[np.where(r_band7 > 0.001)],r_band7[np.where(r_band7 > 0.001
 plt.plot(m,r_beam_better, color='dimgray',linestyle='--', zorder=2.5)
 plt.text(0.58, 0.6, 'Radius of the restoring beam',color = 'dimgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.plot(m,r_beam_half, color='lightgray',linestyle='dotted', zorder=2.5)
-plt.text(0.525, 0.2, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
+plt.text(0.525, 0.35, 'half Radius of the restoring beam',color = 'lightgray', rotation_mode = 'default' , rotation = 0, horizontalalignment='left',verticalalignment='top', transform=ax.transAxes)
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('$M_{\star}$ [$M_{\odot}$]', fontsize = 14)
@@ -537,3 +537,5 @@ for i in range(0,len(id)):
 
 for i in range(0,len(id)):
     print("{:.0f}".format(id[i]), '&',"{:.1f}".format(r_hl_100[i]),'$\pm$', "{:.1f}".format(r_hl_100_err[i]), '&',"{:.1f}".format(r_hl_345[i]),'$\pm$', "{:.1f}".format(r_hl_345_err[i]), '&', "{:.1f}".format(np.log10(M_gas)[i]),'$\pm$', "{:.1f}".format(np.abs(M_gas_err/(M_gas*np.log(10)))[i]), '&',"{:.1f}".format(np.log10(M_starh)[i]),'$\pm$', "{:.1f}".format(np.abs(M_starh_err/(M_starh*np.log(10)))[i]) , '&' , "{:.1f}".format(np.log10(M_tot)[i]),'$\pm$', "{:.1f}".format(np.abs(M_tot_err/(M_tot*np.log(10)))[i]), '&' , "{:.0f}".format(gas_fraction[i]),'$\pm$', "{:.0f}".format(gas_fraction_err[i]), '&' , "{:.0f}".format(10**(-3)*A_v[i]),'$\pm$', "{:.0f}".format(10**(-3)*A_v_err[i]), '\\\\')
+
+print((M_starh*10**(-5))[10], '$\pm$', (M_starh_err*10**(-5))[10])
